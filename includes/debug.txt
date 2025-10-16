@@ -1,0 +1,167 @@
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => areas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 2
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => areas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => areas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => componentes
+    [id_area] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => unidades_tematicas
+    [id_componente] => 1
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => objetos_conhecimento
+    [id_unidade_tematica] => 11
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => habilidades
+    [id_objeto] => 198
+)
+
+Array
+(
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => etapas
+)
+
+Array
+(
+    [acao] => bncc
+    [campo] => anos
+    [id_etapa] => 1
+)
+

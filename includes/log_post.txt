@@ -1,0 +1,388 @@
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"4º","area":"1","componenteCurricular":"1","unidadeTematicas":"4","objetosConhecimento":"181","habilidades":["295"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => teste
+    [professor] => 
+    [materia] => 2
+    [periodo_realizacao] => Agosto de 2025
+    [numero_aulas_semanais] => 2
+    [anos_plano] => Array
+        (
+            [0] => 4º
+        )
+
+    [objetivo_geral] => <p>teste</p>
+    [objetivo_especifico] => <p>teste</p>
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"3º","area":"6","componenteCurricular":"10","unidadeTematicas":"90","objetosConhecimento":"777","habilidades":["1380"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => teste
+    [professor] => 
+    [materia] => 7
+    [periodo_realizacao] => Agosto de 2025
+    [numero_aulas_semanais] => 2
+    [anos_plano] => Array
+        (
+            [0] => 5º
+        )
+
+    [objetivo_geral] => <p>teste</p>
+    [objetivo_especifico] => <p>teste</p>
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"5º","area":"1","componenteCurricular":"4","unidadeTematicas":"27","objetosConhecimento":"266","habilidades":["532"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => Teste 2 
+    [professor] => 
+    [materia] => 5
+    [periodo_realizacao] => Agosto de 2025
+    [numero_aulas_semanais] => 5
+    [anos_plano] => Array
+        (
+            [0] => 6º
+        )
+
+    [objetivo_geral] => <p>teste</p>
+    [objetivo_especifico] => <p>teste</p>
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"4º","area":"6","componenteCurricular":"10","unidadeTematicas":"90","objetosConhecimento":"777","habilidades":["1380"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => Teste 3
+    [professor] => 
+    [materia] => 5
+    [periodo_realizacao] => Abril de 2025
+    [numero_aulas_semanais] => 5
+    [anos_plano] => Array
+        (
+            [0] => 8º
+        )
+
+    [objetivo_geral] => <p>teste</p>
+    [objetivo_especifico] => <p>teste</p>
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"2","ano":"2º","area":"6","componenteCurricular":"10","unidadeTematicas":"90","objetosConhecimento":"752","habilidades":["1352"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => Teste 4
+    [professor] => 
+    [materia] => 5
+    [periodo_realizacao] => Abril 2027
+    [numero_aulas_semanais] => 5
+    [anos_plano] => Array
+        (
+            [0] => 5º
+        )
+
+    [objetivo_geral] => <p>teste</p>
+    [objetivo_especifico] => <p>teste</p>
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"2º","area":"6","componenteCurricular":"10","unidadeTematicas":"90","objetosConhecimento":"742","habilidades":["1323"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => teste
+    [professor] => 
+    [materia] => 2
+    [periodo_realizacao] => Agosto de 2026
+    [numero_aulas_semanais] => 4
+    [anos_plano] => Array
+        (
+            [0] => 6º
+        )
+
+    [objetivo_geral] => <p>teste</p>
+    [objetivo_especifico] => <p>teste</p>
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"2","ano":"2º","area":"6","componenteCurricular":"10","unidadeTematicas":"90","objetosConhecimento":"777","habilidades":["1380"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => Teste 7
+    [professor] => 
+    [materia] => 7
+    [periodo_realizacao] => Abril de 2025
+    [numero_aulas_semanais] => 3
+    [anos_plano] => Array
+        (
+            [0] => 6º
+        )
+
+    [objetivo_geral] => <p>teste</p>
+    [objetivo_especifico] => <p>teste</p>
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"3º","area":"4","componenteCurricular":"8","unidadeTematicas":"84","objetosConhecimento":"691","habilidades":["1223"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => teste
+    [professor] => 
+    [materia] => 7
+    [periodo_realizacao] => agosto 2020
+    [numero_aulas_semanais] => 2
+    [anos_plano] => Array
+        (
+            [0] => 3º
+        )
+
+    [objetivo_geral] => teste
+    [objetivo_especifico] => teste
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"3º","area":"3","componenteCurricular":"6","unidadeTematicas":"51","objetosConhecimento":"530","habilidades":["917"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => teste
+    [professor] => 
+    [materia] => 3
+    [periodo_realizacao] => 232
+    [numero_aulas_semanais] => 23
+    [anos_plano] => Array
+        (
+            [0] => 4º
+        )
+
+    [objetivo_geral] => twesef
+    [objetivo_especifico] => fwefwe
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"3º","area":"1","componenteCurricular":"4","unidadeTematicas":"30","objetosConhecimento":"320","habilidades":["602"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => Teste 9
+    [professor] => 
+    [materia] => 3
+    [periodo_realizacao] => Agosto
+    [numero_aulas_semanais] => 3
+    [anos_plano] => Array
+        (
+            [0] => 3º
+        )
+
+    [objetivo_geral] => teste
+    [objetivo_especifico] => teste
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"5º","area":"6","componenteCurricular":"10","unidadeTematicas":"90","objetosConhecimento":"742","habilidades":["1323"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => tesrtwe ewre
+    [professor] => 
+    [materia] => 7
+    [periodo_realizacao] => Agosto de 2025
+    [numero_aulas_semanais] => 3
+    [anos_plano] => Array
+        (
+            [0] => 5º
+            [1] => 7º
+        )
+
+    [objetivo_geral] => tete
+    [objetivo_especifico] => teste
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+    [id-planejamento-mensal] => 
+    [linhas_serializadas] => [{"etapa":"1","ano":"3º","area":"4","componenteCurricular":"7","unidadeTematicas":"54","objetosConhecimento":"573","habilidades":["1018"],"conteudos":"<p>teste</p>","metodologias":"<p>teste</p>"}]
+    [nome-plano-mensal] => teste
+    [professor] => 
+    [materia] => 7
+    [periodo_realizacao] => agosto de 20344
+    [numero_aulas_semanais] => 4
+    [anos_plano] => Array
+        (
+            [0] => 5º
+        )
+
+    [objetivo_geral] => teste
+    [objetivo_especifico] => teste
+    [etapa_tmp] => 
+    [ano-linha] => 
+    [area_tmp] => 
+    [componente_curricular_tmp] => 
+    [unidadeTematicas_tmp] => 
+    [objetosConhecimento_tmp] => 
+    [conteudos_linha_tmp] => 
+    [metodologias_linha_tmp] => 
+    [acao] => criar
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)

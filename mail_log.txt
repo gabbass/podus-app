@@ -1,0 +1,246 @@
+2025-05-26 20:57:33 - Enviado para contatoheliosander@gmail.com
+2025-05-26 23:57:31 SERVER -&gt; CLIENT: 220 ESMTP smtp.hostinger.com<br>
+2025-05-26 23:57:31 CLIENT -&gt; SERVER: EHLO portaluniversodosaber.com.br<br>
+2025-05-26 23:57:31 SERVER -&gt; CLIENT: 250-smtp.hostinger.com250-PIPELINING250-SIZE 48811212250-ETRN250-AUTH PLAIN LOGIN250-ENHANCEDSTATUSCODES250-8BITMIME250-DSN250 CHUNKING<br>
+2025-05-26 23:57:31 CLIENT -&gt; SERVER: AUTH LOGIN<br>
+2025-05-26 23:57:32 SERVER -&gt; CLIENT: 334 VXNlcm5hbWU6<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-26 23:57:32 SERVER -&gt; CLIENT: 334 UGFzc3dvcmQ6<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-26 23:57:32 SERVER -&gt; CLIENT: 235 2.7.0 Authentication successful<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: MAIL FROM:&lt;contato@heliosander.com.br&gt;<br>
+2025-05-26 23:57:32 SERVER -&gt; CLIENT: 250 2.1.0 Ok<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: RCPT TO:&lt;contatoheliosander@gmail.com&gt;<br>
+2025-05-26 23:57:32 SERVER -&gt; CLIENT: 250 2.1.5 Ok<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: DATA<br>
+2025-05-26 23:57:32 SERVER -&gt; CLIENT: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: Date: Mon, 26 May 2025 20:57:31 -0300<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: To: contatoheliosander@gmail.com<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: From: Seu Nome &lt;contato@heliosander.com.br&gt;<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: Subject: Credenciais de Acesso<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: Message-ID: &lt;sE9A2DnPcOupWttcCDZhIPQAbtmGrvGam8taRr5LEFw@portaluniversodosaber.com.br&gt;<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: X-Mailer: PHPMailer 6.10.0 (https://github.com/PHPMailer/PHPMailer)<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: MIME-Version: 1.0<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: Content-Type: text/html; charset=iso-8859-1<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: <br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: <br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER:             &lt;h2&gt;Suas credenciais&lt;/h2&gt;<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong&gt;Login:&lt;/strong&gt; wilma7368&lt;/p&gt;<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong&gt;Senha:&lt;/strong&gt; 6gfvn&lt;/p&gt;<br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER:         <br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: <br>
+2025-05-26 23:57:32 CLIENT -&gt; SERVER: .<br>
+2025-05-26 23:57:33 SERVER -&gt; CLIENT: 250 2.0.0 Ok: queued as 4b5t3w4Vx2zFK5M0<br>
+2025-05-26 23:57:33 CLIENT -&gt; SERVER: QUIT<br>
+2025-05-26 23:57:33 SERVER -&gt; CLIENT: 221 2.0.0 Bye<br>
+
+2025-05-26 20:57:48 - Enviado para contatoheliosander@gmail.com
+2025-05-26 23:57:47 SERVER -&gt; CLIENT: 220 ESMTP smtp.hostinger.com<br>
+2025-05-26 23:57:47 CLIENT -&gt; SERVER: EHLO portaluniversodosaber.com.br<br>
+2025-05-26 23:57:47 SERVER -&gt; CLIENT: 250-smtp.hostinger.com250-PIPELINING250-SIZE 48811212250-ETRN250-AUTH PLAIN LOGIN250-ENHANCEDSTATUSCODES250-8BITMIME250-DSN250 CHUNKING<br>
+2025-05-26 23:57:47 CLIENT -&gt; SERVER: AUTH LOGIN<br>
+2025-05-26 23:57:47 SERVER -&gt; CLIENT: 334 VXNlcm5hbWU6<br>
+2025-05-26 23:57:47 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-26 23:57:47 SERVER -&gt; CLIENT: 334 UGFzc3dvcmQ6<br>
+2025-05-26 23:57:47 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-26 23:57:47 SERVER -&gt; CLIENT: 235 2.7.0 Authentication successful<br>
+2025-05-26 23:57:47 CLIENT -&gt; SERVER: MAIL FROM:&lt;contato@heliosander.com.br&gt;<br>
+2025-05-26 23:57:48 SERVER -&gt; CLIENT: 250 2.1.0 Ok<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: RCPT TO:&lt;contatoheliosander@gmail.com&gt;<br>
+2025-05-26 23:57:48 SERVER -&gt; CLIENT: 250 2.1.5 Ok<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: DATA<br>
+2025-05-26 23:57:48 SERVER -&gt; CLIENT: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: Date: Mon, 26 May 2025 20:57:47 -0300<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: To: contatoheliosander@gmail.com<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: From: Seu Nome &lt;contato@heliosander.com.br&gt;<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: Subject: Credenciais de Acesso<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: Message-ID: &lt;qBc1ZtFy4mzXok0dDwzLgRW6voHyULyGzpTVvDlyY4@portaluniversodosaber.com.br&gt;<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: X-Mailer: PHPMailer 6.10.0 (https://github.com/PHPMailer/PHPMailer)<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: MIME-Version: 1.0<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: Content-Type: text/html; charset=iso-8859-1<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: <br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: <br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER:             &lt;h2&gt;Suas credenciais&lt;/h2&gt;<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong&gt;Login:&lt;/strong&gt; wilma2124&lt;/p&gt;<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong&gt;Senha:&lt;/strong&gt; p74fk&lt;/p&gt;<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER:         <br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: <br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: .<br>
+2025-05-26 23:57:48 SERVER -&gt; CLIENT: 250 2.0.0 Ok: queued as 4b5t4D2sZRz1GSbf<br>
+2025-05-26 23:57:48 CLIENT -&gt; SERVER: QUIT<br>
+2025-05-26 23:57:48 SERVER -&gt; CLIENT: 221 2.0.0 Bye<br>
+
+2025-05-26 21:45:02 - Enviado para controllerheliosander@gmail.com
+2025-05-27 00:45:01 SERVER -&gt; CLIENT: 220 ESMTP smtp.hostinger.com<br>
+2025-05-27 00:45:01 CLIENT -&gt; SERVER: EHLO portaluniversodosaber.com.br<br>
+2025-05-27 00:45:01 SERVER -&gt; CLIENT: 250-smtp.hostinger.com250-PIPELINING250-SIZE 48811212250-ETRN250-AUTH PLAIN LOGIN250-ENHANCEDSTATUSCODES250-8BITMIME250-DSN250 CHUNKING<br>
+2025-05-27 00:45:01 CLIENT -&gt; SERVER: AUTH LOGIN<br>
+2025-05-27 00:45:01 SERVER -&gt; CLIENT: 334 VXNlcm5hbWU6<br>
+2025-05-27 00:45:01 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-27 00:45:01 SERVER -&gt; CLIENT: 334 UGFzc3dvcmQ6<br>
+2025-05-27 00:45:01 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-27 00:45:01 SERVER -&gt; CLIENT: 235 2.7.0 Authentication successful<br>
+2025-05-27 00:45:01 CLIENT -&gt; SERVER: MAIL FROM:&lt;contato@heliosander.com.br&gt;<br>
+2025-05-27 00:45:02 SERVER -&gt; CLIENT: 250 2.1.0 Ok<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: RCPT TO:&lt;controllerheliosander@gmail.com&gt;<br>
+2025-05-27 00:45:02 SERVER -&gt; CLIENT: 250 2.1.5 Ok<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: DATA<br>
+2025-05-27 00:45:02 SERVER -&gt; CLIENT: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: Date: Mon, 26 May 2025 21:45:01 -0300<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: To: controllerheliosander@gmail.com<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: From: Portal Universo do Saber &lt;contato@heliosander.com.br&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: Subject: Portal Universo do Saber<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: Message-ID: &lt;pntYAqc0zZUf8392P5H8cz5mluAEqVeRqkmPbjtUUY@portaluniversodosaber.com.br&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: X-Mailer: PHPMailer 6.10.0 (https://github.com/PHPMailer/PHPMailer)<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: MIME-Version: 1.0<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: Content-Type: text/html; charset=iso-8859-1<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: Content-Transfer-Encoding: 8bit<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:     &lt;div style=&#039;font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;&#039;&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;h2 style=&#039;color: #0057b7;&#039;&gt;Seus dados de acesso ao Universo do Saber&lt;/h2&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;div style=&#039;background: #f5f7fa; padding: 15px; border-radius: 5px;&#039;&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong style=&#039;color: #003d7a;&#039;&gt;Login:&lt;/strong&gt; helio3098&lt;/p&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong style=&#039;color: #003d7a;&#039;&gt;Senha:&lt;/strong&gt; 4c4mf&lt;/p&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;/div&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;p style=&#039;margin-top: 20px;&#039;&gt;Para acessar o portal, clique no bot&atilde;o abaixo:&lt;/p&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;a href=&#039;https://portaluniversodosaber.com.br/portal/login-professor.php&#039; <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:            style=&#039;display: inline-block; background: #0057b7; color: white; <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:                   padding: 10px 20px; text-decoration: none; border-radius: 5px;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:                   margin: 15px 0;&#039;&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:             Acessar Portal<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;/a&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;p&gt;Se o bot&atilde;o n&atilde;o funcionar, copie e cole este link no seu navegador:&lt;br&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;span style=&#039;color: #0057b7;&#039;&gt;https://portaluniversodosaber.com.br/portal/login-professor.php&lt;/span&gt;&lt;/p&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;p style=&#039;margin-top: 20px; font-size: 0.9em; color: #6c757d;&#039;&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:             Atenciosamente,&lt;br&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:             Equipe Universo do Saber<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:         &lt;/p&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER:     &lt;/div&gt;<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: <br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: .<br>
+2025-05-27 00:45:02 SERVER -&gt; CLIENT: 250 2.0.0 Ok: queued as 4b5v6k18ylzFwZQm<br>
+2025-05-27 00:45:02 CLIENT -&gt; SERVER: QUIT<br>
+2025-05-27 00:45:02 SERVER -&gt; CLIENT: 221 2.0.0 Bye<br>
+
+2025-05-26 23:11:02 - Enviado para contatoheliosander@gmail.com
+2025-05-27 02:11:01 SERVER -&gt; CLIENT: 220 ESMTP smtp.hostinger.com<br>
+2025-05-27 02:11:01 CLIENT -&gt; SERVER: EHLO portaluniversodosaber.com.br<br>
+2025-05-27 02:11:01 SERVER -&gt; CLIENT: 250-smtp.hostinger.com250-PIPELINING250-SIZE 48811212250-ETRN250-AUTH PLAIN LOGIN250-ENHANCEDSTATUSCODES250-8BITMIME250-DSN250 CHUNKING<br>
+2025-05-27 02:11:01 CLIENT -&gt; SERVER: AUTH LOGIN<br>
+2025-05-27 02:11:01 SERVER -&gt; CLIENT: 334 VXNlcm5hbWU6<br>
+2025-05-27 02:11:01 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-27 02:11:01 SERVER -&gt; CLIENT: 334 UGFzc3dvcmQ6<br>
+2025-05-27 02:11:01 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-27 02:11:01 SERVER -&gt; CLIENT: 235 2.7.0 Authentication successful<br>
+2025-05-27 02:11:01 CLIENT -&gt; SERVER: MAIL FROM:&lt;contato@heliosander.com.br&gt;<br>
+2025-05-27 02:11:01 SERVER -&gt; CLIENT: 250 2.1.0 Ok<br>
+2025-05-27 02:11:01 CLIENT -&gt; SERVER: RCPT TO:&lt;contatoheliosander@gmail.com&gt;<br>
+2025-05-27 02:11:02 SERVER -&gt; CLIENT: 250 2.1.5 Ok<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: DATA<br>
+2025-05-27 02:11:02 SERVER -&gt; CLIENT: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: Date: Mon, 26 May 2025 23:11:01 -0300<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: To: contatoheliosander@gmail.com<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: From: Portal Universo do Saber &lt;contato@heliosander.com.br&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: Subject: Portal Universo do Saber<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: Message-ID: &lt;gmVYUks4vSNqwW8ytjOLgCD4cdQBWP1mYtI5Zs4GMg4@portaluniversodosaber.com.br&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: X-Mailer: PHPMailer 6.10.0 (https://github.com/PHPMailer/PHPMailer)<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: MIME-Version: 1.0<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: Content-Type: text/html; charset=iso-8859-1<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: Content-Transfer-Encoding: 8bit<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:     &lt;div style=&#039;font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;&#039;&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;h2 style=&#039;color: #0057b7;&#039;&gt;Seus dados de acesso ao Universo do Saber&lt;/h2&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;div style=&#039;background: #f5f7fa; padding: 15px; border-radius: 5px;&#039;&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong style=&#039;color: #003d7a;&#039;&gt;Login:&lt;/strong&gt; helio4821&lt;/p&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong style=&#039;color: #003d7a;&#039;&gt;Senha:&lt;/strong&gt; t6e4l&lt;/p&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;/div&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;p style=&#039;margin-top: 20px;&#039;&gt;Para acessar o portal, clique no bot&atilde;o abaixo:&lt;/p&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;a href=&#039;https://portaluniversodosaber.com.br/portal/login-professor&#039; <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:            style=&#039;display: inline-block; background: #0057b7; color: white; <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:                   padding: 10px 20px; text-decoration: none; border-radius: 5px;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:                   margin: 15px 0;&#039;&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:             Acessar Portal<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;/a&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;p&gt;Se o bot&atilde;o n&atilde;o funcionar, copie e cole este link no seu navegador:&lt;br&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;span style=&#039;color: #0057b7;&#039;&gt;https://portaluniversodosaber.com.br/portal/login-professor&lt;/span&gt;&lt;/p&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;p style=&#039;margin-top: 20px; font-size: 0.9em; color: #6c757d;&#039;&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:             Atenciosamente,&lt;br&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:             Equipe Portal Universo do Saber<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:         &lt;/p&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER:     &lt;/div&gt;<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: <br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: .<br>
+2025-05-27 02:11:02 SERVER -&gt; CLIENT: 250 2.0.0 Ok: queued as 4b5x1y0BPjzFwZQm<br>
+2025-05-27 02:11:02 CLIENT -&gt; SERVER: QUIT<br>
+2025-05-27 02:11:02 SERVER -&gt; CLIENT: 221 2.0.0 Bye<br>
+
+2025-05-27 09:31:29 - Enviado para controllerheliosander@gmail.com
+2025-05-27 12:31:27 SERVER -&gt; CLIENT: 220 ESMTP smtp.hostinger.com<br>
+2025-05-27 12:31:27 CLIENT -&gt; SERVER: EHLO portaluniversodosaber.com.br<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 250-smtp.hostinger.com250-PIPELINING250-SIZE 48811212250-ETRN250-AUTH PLAIN LOGIN250-ENHANCEDSTATUSCODES250-8BITMIME250-DSN250 CHUNKING<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: AUTH LOGIN<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 334 VXNlcm5hbWU6<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 334 UGFzc3dvcmQ6<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: [credentials hidden]<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 235 2.7.0 Authentication successful<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: MAIL FROM:&lt;contato@heliosander.com.br&gt;<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 250 2.1.0 Ok<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: RCPT TO:&lt;controllerheliosander@gmail.com&gt;<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 250 2.1.5 Ok<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: DATA<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: Date: Tue, 27 May 2025 09:31:27 -0300<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: To: controllerheliosander@gmail.com<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: From: Portal Universo do Saber &lt;contato@heliosander.com.br&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: Subject: Portal Universo do Saber<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: Message-ID: &lt;erCQR8jetU6h4YnUHnO5tVPfql6pznOsMZALMx3Cxes@portaluniversodosaber.com.br&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: X-Mailer: PHPMailer 6.10.0 (https://github.com/PHPMailer/PHPMailer)<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: MIME-Version: 1.0<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: Content-Type: text/html; charset=iso-8859-1<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: Content-Transfer-Encoding: 8bit<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:     &lt;div style=&#039;font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;&#039;&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;h2 style=&#039;color: #0057b7;&#039;&gt;Seus dados de acesso ao Universo do Saber&lt;/h2&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;div style=&#039;background: #f5f7fa; padding: 15px; border-radius: 5px;&#039;&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong style=&#039;color: #003d7a;&#039;&gt;Login:&lt;/strong&gt; helio9521&lt;/p&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:             &lt;p&gt;&lt;strong style=&#039;color: #003d7a;&#039;&gt;Senha:&lt;/strong&gt; s867z&lt;/p&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;/div&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;p style=&#039;margin-top: 20px;&#039;&gt;Para acessar o portal, clique no bot&atilde;o abaixo:&lt;/p&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;a href=&#039;https://portaluniversodosaber.com.br/portal/login-professor&#039; <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:            style=&#039;display: inline-block; background: #0057b7; color: white; <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:                   padding: 10px 20px; text-decoration: none; border-radius: 5px;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:                   margin: 15px 0;&#039;&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:             Acessar Portal<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;/a&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;p&gt;Se o bot&atilde;o n&atilde;o funcionar, copie e cole este link no seu navegador:&lt;br&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;span style=&#039;color: #0057b7;&#039;&gt;https://portaluniversodosaber.com.br/portal/login-professor&lt;/span&gt;&lt;/p&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;p style=&#039;margin-top: 20px; font-size: 0.9em; color: #6c757d;&#039;&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:             Atenciosamente,&lt;br&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:             Equipe Portal Universo do Saber<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:         &lt;/p&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER:     &lt;/div&gt;<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: <br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: .<br>
+2025-05-27 12:31:28 SERVER -&gt; CLIENT: 250 2.0.0 Ok: queued as 4b6Bnr3sLrzFK7CM<br>
+2025-05-27 12:31:28 CLIENT -&gt; SERVER: QUIT<br>
+2025-05-27 12:31:29 SERVER -&gt; CLIENT: 221 2.0.0 Bye<br>
+

@@ -1,0 +1,19 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /painel/
+Disallow: /includes/
+Disallow: /conexao.php
+Disallow: /processar-contato.php
+Disallow: /PHPMailer/
+Disallow: /vendor/
+Disallow: /tmp/
+Disallow: /artigo-detalhes.php
+Disallow: /*?contato=
+Disallow: /*?newsletter=
+Allow: /img/
+Allow: /images/
+Allow: /uploads/
+Allow: /css/
+Allow: /js/
+
+Sitemap: https://portaluniversodosaber.com.br/sitemap.xml

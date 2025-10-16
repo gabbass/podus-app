@@ -1,0 +1,364 @@
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)
+Array
+(
+    [id_professor] => 180
+    [_SESSION] => Array
+        (
+            [id] => 180
+            [login] => gbq26062025
+            [perfil] => Professor
+            [escola] => 
+            [nome] => Gabriel Bassotto
+        )
+
+)

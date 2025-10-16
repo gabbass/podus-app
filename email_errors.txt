@@ -1,0 +1,20 @@
+2025-05-26 16:26:14 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+PHPMailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 111 Additional SMTP info: Connection refused
+2025-05-26 16:27:09 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not authenticate.
+PHPMailer Error: SMTP Error: Could not authenticate.
+2025-05-26 16:27:55 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not authenticate.
+PHPMailer Error: SMTP Error: Could not authenticate.
+2025-05-26 16:28:52 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+PHPMailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server
+2025-05-26 16:29:42 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+PHPMailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server
+2025-05-26 16:30:19 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not authenticate.
+PHPMailer Error: SMTP Error: Could not authenticate.
+2025-05-26 16:32:00 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+PHPMailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server Additional SMTP info: php_network_getaddresses: getaddrinfo for smtp.portaluniversodosaber.com.br failed: Name or service not known
+2025-05-26 16:32:25 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not authenticate.
+PHPMailer Error: SMTP Error: Could not authenticate.
+2025-05-26 17:19:17 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not authenticate.
+PHPMailer Error: SMTP Error: Could not authenticate.
+2025-05-26 17:19:33 - Erro ao enviar para contatoheliosander@gmail.com: SMTP Error: Could not authenticate.
+PHPMailer Error: SMTP Error: Could not authenticate.

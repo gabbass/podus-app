@@ -1,0 +1,47 @@
+[23-Jul-2025 13:05:02 America/Fortaleza] PHP Parse error:  syntax error, unexpected identifier "curl_setopt" in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 38
+[23-Jul-2025 13:05:13 America/Fortaleza] PHP Parse error:  syntax error, unexpected identifier "curl_setopt" in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 38
+[23-Jul-2025 13:27:36 America/Fortaleza] PHP Parse error:  syntax error, unexpected identifier "curl_setopt" in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 38
+[23-Jul-2025 13:38:50 America/Fortaleza] PHP Parse error:  syntax error, unexpected identifier "curl_setopt" in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 38
+[23-Jul-2025 14:19:46 America/Fortaleza] PHP Parse error:  syntax error, unexpected identifier "curl_setopt" in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 38
+[23-Jul-2025 14:19:56 America/Fortaleza] PHP Parse error:  syntax error, unexpected identifier "curl_setopt" in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 38
+[23-Jul-2025 14:27:11 America/Fortaleza] PHP Parse error:  syntax error, unexpected identifier "curl_setopt" in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 46
+[23-Jul-2025 14:29:08 America/Fortaleza] PHP Warning:  require_once(/home4/por17324/public_html/portal/ai/includes/../sessao-professor.php): Failed to open stream: No such file or directory in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 8
+[23-Jul-2025 14:29:08 America/Fortaleza] PHP Fatal error:  Uncaught Error: Failed opening required '/home4/por17324/public_html/portal/ai/includes/../sessao-professor.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home4/por17324/public_html/portal/ai/includes/openai-handler.php:8
+Stack trace:
+#0 {main}
+  thrown in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 8
+[23-Jul-2025 14:29:22 America/Fortaleza] PHP Warning:  require_once(/home4/por17324/public_html/portal/ai/includes/../sessao-professor.php): Failed to open stream: No such file or directory in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 8
+[23-Jul-2025 14:29:22 America/Fortaleza] PHP Fatal error:  Uncaught Error: Failed opening required '/home4/por17324/public_html/portal/ai/includes/../sessao-professor.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home4/por17324/public_html/portal/ai/includes/openai-handler.php:8
+Stack trace:
+#0 {main}
+  thrown in /home4/por17324/public_html/portal/ai/includes/openai-handler.php on line 8
+[23-Jul-2025 14:43:23 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:43:23 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:43:50 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:43:50 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:51:14 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:51:14 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:56:57 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:56:57 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:57:58 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 14:57:58 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 15:06:02 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 15:06:02 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 15:33:17 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 15:33:17 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 16:20:12 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 16:20:12 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 16:21:09 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 16:21:09 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 20:44:16 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 20:44:16 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 20:50:41 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 20:50:41 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 22:58:45 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 22:58:45 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 22:59:48 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 22:59:48 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 23:00:27 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[23-Jul-2025 23:00:27 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[25-Jul-2025 08:22:47 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5
+[25-Jul-2025 08:22:47 America/Fortaleza] PHP Warning:  Array to string conversion in /home4/por17324/public_html/portal/ai/config/openai.php on line 5

@@ -1,0 +1,5 @@
+[09-Jul-2025 16:26:41 America/Fortaleza] PHP Warning:  require(sessao-professor.php): Failed to open stream: No such file or directory in /home4/por17324/public_html/portal/uploads/materiais/gbq26062025/1752076473_material-pedagogico.php on line 2
+[09-Jul-2025 16:26:41 America/Fortaleza] PHP Fatal error:  Uncaught Error: Failed opening required 'sessao-professor.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home4/por17324/public_html/portal/uploads/materiais/gbq26062025/1752076473_material-pedagogico.php:2
+Stack trace:
+#0 {main}
+  thrown in /home4/por17324/public_html/portal/uploads/materiais/gbq26062025/1752076473_material-pedagogico.php on line 2
