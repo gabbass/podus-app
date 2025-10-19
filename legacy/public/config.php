@@ -1,3 +1,7 @@
 <?php
-$titulo = 'iDivas - Agenda on-line para Mulheres';
+
+require_once dirname(__DIR__) . '/../config/legacy.php';
+
+$titulo = LegacyConfig::appTitle();
+
 ?>
