@@ -1,5 +1,7 @@
 <?php
 require("conexao.php");
+
+$recaptchaCheckboxKey = LegacyConfig::recaptchaSiteKey('checkbox') ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -801,7 +803,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 				<p class="error">Por favor, marque o reCAPTCHA antes de enviar.</p>
 			  </div>
 			<?php endif; ?>
-            <div class="g-recaptcha" data-sitekey="6Ld4zIIrAAAAAOaFzWz-lYjiYI_sS2Xk8r3-MEjJ"></div>
+            <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars($recaptchaCheckboxKey, ENT_QUOTES, 'UTF-8'); ?>"></div>
 				<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 				</div>
 				</div>

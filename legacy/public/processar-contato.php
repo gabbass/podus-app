@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	//ReCaptacha
 	error_log('ANTES DE VALIDAR RECAPTCHA');
 	$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-    $secretKey = '6Ld4zIIrAAAAAOFJSzeom29DzogYjGeV31Fn_Z4o';
+    $secretKey = LegacyConfig::recaptchaSecretKey();
     $recaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify';
     $recaptchaData = [
         'secret' => $secretKey,
@@ -72,17 +72,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		
             $mail = new PHPMailer(true);
             
-            // Configurações do servidor SMTP (ajuste conforme seu servidor)
+            $mailConfig = LegacyConfig::mailConfig('contact');
+
             $mail->isSMTP();
-            $mail->Host = 'smtp.titan.email';
-			$mail->SMTPAuth = true;
-			$mail->Username = 'contato@portaluniversodosaber.com.br';
-			$mail->Password = 'jPpb0#4w@15';
-			$mail->SMTPSecure = 'tls';
-			$mail->Port = 587;
-			$mail->setFrom('contato@portaluniversodosaber.com.br', 'Portal Universo do Saber - Contato');
-			$mail->addAddress('contato@portaluniversodosaber.com.br');
-			$mail->addCC($email); // ou addBCC, se quiser oculto
+            $mail->Host = $mailConfig['host'];
+            $mail->SMTPAuth = !empty($mailConfig['username']);
+            $mail->Username = $mailConfig['username'] ?? '';
+            $mail->Password = $mailConfig['password'] ?? '';
+            if (!empty($mailConfig['encryption'])) {
+                $mail->SMTPSecure = $mailConfig['encryption'];
+            }
+            if (!empty($mailConfig['port'])) {
+                $mail->Port = (int) $mailConfig['port'];
+            }
+            $mail->setFrom($mailConfig['from_address'] ?? $mailConfig['username'] ?? '', $mailConfig['from_name'] ?? '');
+            if (!empty($mailConfig['to_address'])) {
+                $mail->addAddress($mailConfig['to_address']);
+            } else {
+                $mail->addAddress($mailConfig['from_address'] ?? $mailConfig['username'] ?? '');
+            }
+            $mail->addCC($email); // ou addBCC, se quiser oculto
+            if (!empty($mailConfig['cc_address'])) {
+                $mail->addCC($mailConfig['cc_address']);
+            }
+            if (!empty($mailConfig['bcc_address'])) {
+                $mail->addBCC($mailConfig['bcc_address']);
+            }
 
              
             $mail->addReplyTo($email, $nome);

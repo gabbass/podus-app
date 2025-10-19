@@ -1,5 +1,8 @@
 <?php
 require("conexao.php");
+
+$recaptchaCheckboxKey = LegacyConfig::recaptchaSiteKey('checkbox') ?? '';
+$recaptchaV3Key = LegacyConfig::recaptchaSiteKey('v3') ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -783,7 +786,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 				<p class="error">Por favor, marque o reCAPTCHA antes de enviar.</p>
 			  </div>
 			<?php endif; ?>
-            <div class="g-recaptcha" data-sitekey="6Ld4zIIrAAAAAOaFzWz-lYjiYI_sS2Xk8r3-MEjJ"></div>
+            <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars($recaptchaCheckboxKey, ENT_QUOTES, 'UTF-8'); ?>"></div>
 				<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 			  <div class="form-submit">
@@ -851,10 +854,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             </div>
         </div>
     </footer>
-	<script src="https://www.google.com/recaptcha/api.js?render=6Le4nHUrAAAAAHBIOPt9ttWSExzv0mwxhCHbHnQI"></script>
+        <script src="https://www.google.com/recaptcha/api.js?render=<?php echo htmlspecialchars($recaptchaV3Key, ENT_QUOTES, 'UTF-8'); ?>"></script>
 <script>
 grecaptcha.ready(function() {
-    grecaptcha.execute('6Le4nHUrAAAAAHBIOPt9ttWSExzv0mwxhCHbHnQI', {action: 'contato'}).then(function(token) {
+    grecaptcha.execute('<?php echo addslashes($recaptchaV3Key); ?>', {action: 'contato'}).then(function(token) {
         var recaptchaResponse = document.createElement('input');
         recaptchaResponse.type = 'hidden';
         recaptchaResponse.name = 'g-recaptcha-response';

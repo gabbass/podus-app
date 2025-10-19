@@ -4,7 +4,7 @@ require('conexao.php');
 require('sessao-adm.php');
 
 // Incluir a biblioteca PHPMailer
-use PHPMailer\PHPMailer\PHPMailerh;
+use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require 'PHPMailer/src/Exception.php';
@@ -32,19 +32,23 @@ function enviarEmail($email, $login, $senha) {
     $mail = new PHPMailer(true);
 
     try {
-        // Configurações do servidor SMTP da Hostinger
+        $config = LegacyConfig::mailConfig('invite');
+
         $mail->isSMTP();
-        $mail->Host = 'smtp.hostinger.com';  // Servidor SMTP da Hostinger
-        $mail->SMTPAuth = true;              // Habilitar autenticação
-        $mail->Username = 'contato@heliosander.com.br'; // Seu e-mail completo
-        $mail->Password = 'L=Pq;8|U1x';        // Senha do e-mail
-        $mail->SMTPSecure = 'ssl';           // SSL obrigatório
-        $mail->Port = 465;                   // Porta SSL
-        
-        // Remetente deve ser o mesmo e-mail da autenticação
-        $mail->setFrom('contato@heliosander.com.br', 'Portal Universo do Saber');
+        $mail->Host = $config['host'];
+        $mail->SMTPAuth = !empty($config['username']);
+        $mail->Username = $config['username'] ?? '';
+        $mail->Password = $config['password'] ?? '';
+        if (!empty($config['encryption'])) {
+            $mail->SMTPSecure = $config['encryption'];
+        }
+        if (!empty($config['port'])) {
+            $mail->Port = (int) $config['port'];
+        }
+
+        $mail->setFrom($config['from_address'] ?? $config['username'] ?? '', $config['from_name'] ?? '');
         $mail->addAddress($email);           // Destinatário
-        
+
         // Conteúdo do e-mail
         $mail->isHTML(true);
         $mail->Subject = 'Portal Universo do Saber';
@@ -77,7 +81,7 @@ function enviarEmail($email, $login, $senha) {
 ";
         
         // Configurações adicionais
-        $mail->SMTPDebug = 2;                // Habilita debug
+        $mail->SMTPDebug = $config['debug'] ?? 0;
         ob_start();                          // Inicia buffer para capturar debug
         $mail->send();
         $debugOutput = ob_get_clean();       // Captura o debug

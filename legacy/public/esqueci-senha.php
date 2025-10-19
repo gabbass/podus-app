@@ -55,17 +55,22 @@ function enviarEmail($email, $login, $senha) {
     $mail = new PHPMailer(true);
 
     try {
+        $config = LegacyConfig::mailConfig('recovery');
         $mail->CharSet = 'UTF-8';
         $mail->Encoding = 'base64';
 
         $mail->isSMTP();
-        $mail->Host = 'smtp.titan.email';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'contato@portaluniversodosaber.com.br';
-        $mail->Password = 'jPpb0#4w@15';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-        $mail->setFrom('contato@portaluniversodosaber.com.br', 'Portal Universo do Saber - Esqueci a senha');
+        $mail->Host = $config['host'];
+        $mail->SMTPAuth = !empty($config['username']);
+        $mail->Username = $config['username'] ?? '';
+        $mail->Password = $config['password'] ?? '';
+        if (!empty($config['encryption'])) {
+            $mail->SMTPSecure = $config['encryption'];
+        }
+        if (!empty($config['port'])) {
+            $mail->Port = (int) $config['port'];
+        }
+        $mail->setFrom($config['from_address'] ?? $config['username'] ?? '', $config['from_name'] ?? '');
         $mail->addAddress($email);
 
         $mail->isHTML(true);
