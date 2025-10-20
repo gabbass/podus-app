@@ -13,3 +13,5 @@ spl_autoload_register(static function (string $class): void {
 if (! class_exists('LegacyConfig')) {
     require_once __DIR__ . '/../config/legacy.php';
 }
+
+require_once __DIR__ . '/events.php';
