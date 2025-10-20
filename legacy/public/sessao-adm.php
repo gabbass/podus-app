@@ -1,15 +1,26 @@
 <?php
 
-session_start();
+use App\Auth\Exceptions\AuthorizationException;
+use App\Auth\LegacySessionGuard;
+use App\Auth\Middleware\AdminMiddleware;
 
-if( isset($_SESSION['login'] )  and $_SESSION['perfil'] == 'Administrador'  ) {
-    $login = $_SESSION['login'];
-    $perfil = $_SESSION['perfil'];
-    $cliente = $_SESSION['cliente'];
-    $cpf = $_SESSION['cpf'];
+require_once dirname(__DIR__, 2) . '/bootstrap/autoload.php';
 
-    
-}else{
+$guard = LegacySessionGuard::fromGlobals();
+$middleware = new AdminMiddleware($guard);
+
+try {
+    $middleware->handle($_SERVER, function ($request, $user) use (&$login, &$perfil, &$cliente, &$cpf) {
+        $login = $user->login;
+        $perfil = $user->profile->value;
+        $cliente = $user->school?->clientCode ?? ($_SESSION['cliente'] ?? null);
+        $cpf = $_SESSION['cpf'] ?? null;
+        $GLOBALS['auth_user'] = $user;
+
+        return true;
+    });
+} catch (AuthorizationException $exception) {
     echo "<script>alert('É necessário fazer o login na página')</script>";
     echo "<script>location.assign('index-portal')</script>";
+    exit;
 }
