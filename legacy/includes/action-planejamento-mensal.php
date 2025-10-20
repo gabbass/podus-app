@@ -3,6 +3,11 @@
 // Gerencia todas as ações de CRUD do Planejamento Mensal
 // Suporta perfil Professor (filtra por login) e Administrador (acesso total)
 
+use App\Auth\Policies\PermissionMatrix;
+use App\Auth\Profiles;
+use App\Models\RoomReservation;
+use App\Services\RoomReservationService;
+
 file_put_contents(__DIR__ . '/log_post_debug.txt', print_r($_POST, true) . "\n", FILE_APPEND);
 ob_start();
 
@@ -45,12 +50,272 @@ function mapLinhaBDToFrontend(array $linhaBD): array
     ];
 }
 
+function mapReservaToFrontend(RoomReservation $reserva, int $userId, bool $canApprove): array
+{
+    return [
+        'id' => $reserva->id,
+        'room_id' => $reserva->roomId,
+        'sala' => $reserva->roomName,
+        'inicio' => $reserva->startsAt->format('Y-m-d H:i:s'),
+        'fim' => $reserva->endsAt->format('Y-m-d H:i:s'),
+        'status' => $reserva->status,
+        'solicitante' => $reserva->reservedByName,
+        'aprovador' => $reserva->approvedByName,
+        'observacoes' => $reserva->notes,
+        'aprovado_em' => $reserva->approvedAt?->format('Y-m-d H:i:s'),
+        'pode_aprovar' => $canApprove && $reserva->status === RoomReservation::STATUS_PENDING,
+        'pode_cancelar' => $reserva->reservedBy === $userId && $reserva->status !== RoomReservation::STATUS_CANCELLED,
+    ];
+}
+
+function normalizarDataInput(?string $valor): ?string
+{
+    if ($valor === null) {
+        return null;
+    }
+
+    $valor = trim($valor);
+    if ($valor === '') {
+        return null;
+    }
+
+    $valor = str_replace('T', ' ', $valor);
+    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $valor) === 1) {
+        $valor .= ':00';
+    }
+
+    return $valor;
+}
+
 $acao    = $_REQUEST['acao'] ?? '';
-$userId  = $_SESSION['id'];
-$isAdmin = $_SESSION['perfil'] === 'Administrador';
+$userId  = (int) ($_SESSION['id'] ?? 0);
+$perfilAtual = $_SESSION['perfil'] ?? 'Professor';
+$perfilEnum = Profiles::fromString((string) $perfilAtual) ?? Profiles::Teacher;
+$isAdmin = $perfilEnum === Profiles::Administrator;
+$authUser = $GLOBALS['auth_user'] ?? null;
+$schoolId = $authUser?->school?->id ?? null;
+$reservationService = new RoomReservationService($conexao);
+$canApprove = PermissionMatrix::allows($perfilEnum, PermissionMatrix::RESERVATIONS_APPROVE);
+$canCreateReservation = PermissionMatrix::allows($perfilEnum, PermissionMatrix::RESERVATIONS_CREATE);
 
 try {
-    // 1. BUSCAR TODOS
+    if ($acao === 'listar_salas') {
+        try {
+            $rooms = $reservationService->getRoomsForSchool($schoolId);
+            $dados = array_map(static fn ($room) => [
+                'id' => $room->id,
+                'nome' => $room->name,
+                'capacidade' => $room->capacity,
+                'localizacao' => $room->location,
+                'descricao' => $room->description,
+            ], $rooms);
+
+            sendJson([
+                'sucesso' => true,
+                'salas' => $dados,
+                'pode_aprovar' => $canApprove,
+            ]);
+        } catch (Throwable $exception) {
+            http_response_code(500);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => 'Falha ao listar salas: ' . $exception->getMessage(),
+            ]);
+        }
+    }
+
+    // 2. LISTAR RESERVAS
+    if ($acao === 'listar_reservas') {
+        $filters = [];
+        if (!empty($_REQUEST['room_id'])) {
+            $filters['room_id'] = (int) $_REQUEST['room_id'];
+        }
+        if (!empty($_REQUEST['planning_id'])) {
+            $filters['planning_id'] = (int) $_REQUEST['planning_id'];
+        }
+
+        $inicio = normalizarDataInput($_REQUEST['inicio'] ?? null);
+        $fim = normalizarDataInput($_REQUEST['fim'] ?? null);
+        if ($inicio !== null) {
+            $filters['starts_at'] = $inicio;
+        }
+        if ($fim !== null) {
+            $filters['ends_at'] = $fim;
+        }
+
+        try {
+            $reservas = $reservationService->listReservations($filters, $schoolId);
+            $payload = array_map(static fn (RoomReservation $reserva) => mapReservaToFrontend($reserva, $userId, $canApprove), $reservas);
+
+            sendJson([
+                'sucesso' => true,
+                'reservas' => $payload,
+                'pode_aprovar' => $canApprove,
+            ]);
+        } catch (Throwable $exception) {
+            http_response_code(500);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => 'Erro ao carregar reservas: ' . $exception->getMessage(),
+            ]);
+        }
+    }
+
+    // 3. RESERVAR SALA
+    if ($acao === 'reservar_sala') {
+        if (! $canCreateReservation) {
+            http_response_code(403);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => 'Você não possui permissão para reservar salas.',
+            ]);
+        }
+
+        $roomId = (int) ($_POST['room_id'] ?? 0);
+        $planningId = (int) ($_POST['planning_id'] ?? 0);
+        $inicio = normalizarDataInput($_POST['inicio'] ?? null);
+        $fim = normalizarDataInput($_POST['fim'] ?? null);
+        $observacoes = trim((string) ($_POST['observacoes'] ?? ''));
+
+        if ($roomId <= 0 || $planningId <= 0 || $inicio === null || $fim === null) {
+            http_response_code(422);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => 'Sala, planejamento e horários são obrigatórios.',
+            ]);
+        }
+
+        try {
+            $reserva = $reservationService->createReservation(
+                roomId: $roomId,
+                planningId: $planningId,
+                reservedBy: $userId,
+                startsAt: $inicio,
+                endsAt: $fim,
+                autoApprove: $canApprove,
+                notes: $observacoes !== '' ? $observacoes : null,
+                schoolId: $schoolId,
+                allowOverride: $canApprove || $isAdmin
+            );
+
+            $mensagem = $canApprove
+                ? 'Reserva confirmada com sucesso.'
+                : 'Reserva registrada e aguardando aprovação.';
+
+            sendJson([
+                'sucesso' => true,
+                'mensagem' => $mensagem,
+                'reserva' => mapReservaToFrontend($reserva, $userId, $canApprove),
+                'auto_aprovada' => $canApprove,
+            ]);
+        } catch (InvalidArgumentException $exception) {
+            http_response_code(422);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ]);
+        } catch (RuntimeException $exception) {
+            http_response_code(400);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    // 4. APROVAR / REJEITAR RESERVA
+    if ($acao === 'aprovar_reserva') {
+        if (! $canApprove) {
+            http_response_code(403);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => 'Você não possui permissão para aprovar reservas.',
+            ]);
+        }
+
+        $reservaId = (int) ($_POST['reserva_id'] ?? 0);
+        $decisao = strtolower((string) ($_POST['decisao'] ?? ''));
+        $comentario = trim((string) ($_POST['comentario'] ?? ''));
+
+        $status = match ($decisao) {
+            'aprovar' => RoomReservation::STATUS_APPROVED,
+            'rejeitar' => RoomReservation::STATUS_REJECTED,
+            'cancelar' => RoomReservation::STATUS_CANCELLED,
+            default => null,
+        };
+
+        if ($reservaId <= 0 || $status === null) {
+            http_response_code(422);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => 'Dados inválidos para atualização da reserva.',
+            ]);
+        }
+
+        try {
+            $reserva = $reservationService->updateStatus(
+                $reservaId,
+                $status,
+                $userId,
+                $comentario !== '' ? $comentario : null,
+                $schoolId
+            );
+
+            $mensagem = match ($status) {
+                RoomReservation::STATUS_APPROVED => 'Reserva aprovada com sucesso.',
+                RoomReservation::STATUS_REJECTED => 'Reserva rejeitada com sucesso.',
+                RoomReservation::STATUS_CANCELLED => 'Reserva cancelada com sucesso.',
+                default => 'Status atualizado.',
+            };
+
+            sendJson([
+                'sucesso' => true,
+                'mensagem' => $mensagem,
+                'reserva' => mapReservaToFrontend($reserva, $userId, $canApprove),
+            ]);
+        } catch (InvalidArgumentException $exception) {
+            http_response_code(422);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ]);
+        } catch (RuntimeException $exception) {
+            http_response_code(400);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    // 5. CANCELAR RESERVA PELO AUTOR
+    if ($acao === 'cancelar_reserva') {
+        $reservaId = (int) ($_POST['reserva_id'] ?? 0);
+        if ($reservaId <= 0) {
+            http_response_code(422);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => 'Reserva inválida.',
+            ]);
+        }
+
+        try {
+            $reserva = $reservationService->cancelReservation($reservaId, $userId, $schoolId);
+            sendJson([
+                'sucesso' => true,
+                'mensagem' => 'Reserva cancelada com sucesso.',
+                'reserva' => mapReservaToFrontend($reserva, $userId, $canApprove),
+            ]);
+        } catch (RuntimeException $exception) {
+            http_response_code(400);
+            sendJson([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    // 6. BUSCAR TODOS
     if ($acao === 'buscar_todos') {
         $termo = $_GET['pesquisa'] ?? '';
         if ($isAdmin) {
@@ -73,7 +338,7 @@ try {
         sendJson(['sucesso' => true, 'data' => $dados]);
     }
 
-    // 2. BUSCAR UM (cabeçalho + linhas)
+    // 7. BUSCAR UM (cabeçalho + linhas)
     elseif ($acao === 'buscar' && !empty($_GET['id'])) {
         $id = (int) $_GET['id'];
         // Cabeçalho
