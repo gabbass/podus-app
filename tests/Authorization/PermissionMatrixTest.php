@@ -159,6 +159,14 @@ if (! PermissionMatrix::allows(Profiles::Teacher, PermissionMatrix::STUDENTS_GRA
     throw new RuntimeException('Professor deveria poder lançar notas.');
 }
 
+if (! PermissionMatrix::allows(Profiles::Administrator, PermissionMatrix::RESERVATIONS_APPROVE)) {
+    throw new RuntimeException('Administrador deveria aprovar reservas.');
+}
+
+if (PermissionMatrix::allows(Profiles::Teacher, PermissionMatrix::RESERVATIONS_APPROVE)) {
+    throw new RuntimeException('Professor não deveria aprovar reservas.');
+}
+
 if (PermissionMatrix::allows(Profiles::Student, PermissionMatrix::STUDENTS_GRADE)) {
     throw new RuntimeException('Aluno não pode lançar notas.');
 }

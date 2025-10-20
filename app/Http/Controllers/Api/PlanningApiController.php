@@ -2,23 +2,43 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Auth\Policies\PermissionMatrix;
+use App\Auth\Profiles;
 use App\Http\Controllers\Controller;
+use App\Http\JsonResponse;
+use App\Http\Request;
 use App\Models\Materia;
 use App\Models\Planning;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
+use App\Models\RoomReservation;
+use App\Services\RoomReservationService;
+use App\Support\LegacyDatabase;
+use App\Support\LegacySchema;
+use InvalidArgumentException;
+use RuntimeException;
 
 class PlanningApiController extends Controller
 {
+    protected RoomReservationService $reservations;
+
+    public function __construct(?RoomReservationService $reservations = null)
+    {
+        $this->reservations = $reservations ?? new RoomReservationService();
+    }
+
     public function __invoke(Request $request)
     {
         $acao = $request->input('acao', 'buscar_todos');
         $user = (array) $request->user();
         $perfil = $user['perfil'] ?? 'Professor';
         $userId = $user['id'] ?? null;
+        $perfilEnum = Profiles::fromString((string) $perfil) ?? Profiles::Teacher;
+        $schoolData = $user['school'] ?? [];
+        $schoolId = null;
+        if (is_array($schoolData) && isset($schoolData['id'])) {
+            $schoolId = (int) $schoolData['id'];
+        } elseif (isset($user['school_id'])) {
+            $schoolId = (int) $user['school_id'];
+        }
 
         return match ($acao) {
             'listar_ciclos' => $this->listarCiclos(),
@@ -28,6 +48,11 @@ class PlanningApiController extends Controller
             'editar' => $this->updatePlanning($request, $perfil, $userId),
             'excluir' => $this->deletePlanning($request, $perfil, $userId),
             'bncc' => $this->bnccResponse($request),
+            'listar_salas' => $this->listarSalas($perfilEnum, $schoolId),
+            'listar_reservas' => $this->listarReservas($request, $perfilEnum, $schoolId, $userId),
+            'reservar_sala' => $this->reservarSala($request, $perfilEnum, $schoolId, $userId),
+            'aprovar_reserva' => $this->aprovarReserva($request, $perfilEnum, $schoolId, $userId),
+            'cancelar_reserva' => $this->cancelarReserva($request, $perfilEnum, $schoolId, $userId),
             default => $this->listPlanning($request, $perfil, $userId),
         };
     }
@@ -45,30 +70,21 @@ class PlanningApiController extends Controller
 
     protected function listarMaterias()
     {
-        return response()->json(
-            Materia::orderBy('nome')->get(['id', 'nome as label'])
-        );
+        return response()->json(Materia::listAll());
     }
 
     protected function listPlanning(Request $request, string $perfil, ?int $userId)
     {
         $termo = $request->input('pesquisa');
-        $query = Planning::query()->orderByDesc('created_date');
-
-        if ($perfil !== 'Administrador' && $userId) {
-            $query->where('login', $userId);
-        }
-
-        if ($termo) {
-            $query->where(function ($q) use ($termo) {
-                $q->where('nome', 'like', "%{$termo}%")
-                  ->orWhere('periodo', 'like', "%{$termo}%");
-            });
-        }
+        $lista = Planning::list(
+            is_string($termo) ? $termo : null,
+            $userId ? (int) $userId : null,
+            $perfil === 'Administrador'
+        );
 
         return response()->json([
             'sucesso' => true,
-            'data' => $query->get(),
+            'data' => $lista,
         ]);
     }
 
@@ -82,9 +98,11 @@ class PlanningApiController extends Controller
             ], 422);
         }
 
-        $planning = Planning::with('linhas')
-            ->when($perfil !== 'Administrador' && $userId, fn ($q) => $q->where('login', $userId))
-            ->find($id);
+        $planning = Planning::findWithLines(
+            $id,
+            $userId ? (int) $userId : null,
+            $perfil === 'Administrador'
+        );
 
         if (!$planning) {
             return response()->json([
@@ -95,8 +113,8 @@ class PlanningApiController extends Controller
 
         return response()->json([
             'sucesso' => true,
-            'cabecalho' => $this->mapCabecalho($planning->toArray()),
-            'linhas' => $planning->linhas->map(fn ($linha) => $this->mapLinha($linha->toArray()))->all(),
+            'cabecalho' => $this->mapCabecalho($planning['cabecalho']),
+            'linhas' => array_map(fn ($linha) => $this->mapLinha($linha), $planning['linhas']),
         ]);
     }
 
@@ -106,27 +124,22 @@ class PlanningApiController extends Controller
             return response()->json(['sucesso' => false, 'mensagem' => 'Usuário não identificado.'], 401);
         }
 
-        return DB::transaction(function () use ($request, $userId) {
-            [$dados, $linhas] = $this->extractPayload($request);
-            $dados['login'] = $userId;
-            $dados['created_date'] = now();
-            $dados['updated_date'] = now();
+        [$dados, $linhas] = $this->extractPayload($request);
 
-            $planning = Planning::create($dados);
-
-            foreach ($linhas as $linha) {
-                $planning->linhas()->create($linha + [
-                    'created_date' => now(),
-                    'updated_date' => now(),
-                ]);
-            }
+        try {
+            $id = Planning::create($dados, $linhas, (int) $userId);
 
             return response()->json([
                 'sucesso' => true,
                 'mensagem' => 'Planejamento cadastrado com sucesso.',
-                'id' => $planning->id,
+                'id' => $id,
             ]);
-        });
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 500);
+        }
     }
 
     protected function updatePlanning(Request $request, string $perfil, ?int $userId)
@@ -136,44 +149,30 @@ class PlanningApiController extends Controller
             return response()->json(['sucesso' => false, 'mensagem' => 'ID inválido.'], 422);
         }
 
-        $planning = Planning::query()
-            ->when($perfil !== 'Administrador' && $userId, fn ($q) => $q->where('login', $userId))
-            ->find($id);
-
-        if (!$planning) {
-            return response()->json(['sucesso' => false, 'mensagem' => 'Planejamento não encontrado.'], 404);
-        }
-
         [$dados, $linhas] = $this->extractPayload($request);
-        $dados['updated_date'] = now();
+        try {
+            $atualizado = Planning::update(
+                $id,
+                $dados,
+                $linhas,
+                $userId ? (int) $userId : null,
+                $perfil === 'Administrador'
+            );
 
-        return DB::transaction(function () use ($planning, $dados, $linhas) {
-            $planning->update($dados);
-
-            $idsMantidos = [];
-            foreach ($linhas as $linha) {
-                $linhaId = Arr::pull($linha, 'id');
-                if ($linhaId) {
-                    $planning->linhas()->whereKey($linhaId)->update($linha + ['updated_date' => now()]);
-                    $idsMantidos[] = $linhaId;
-                } else {
-                    $nova = $planning->linhas()->create($linha + [
-                        'created_date' => now(),
-                        'updated_date' => now(),
-                    ]);
-                    $idsMantidos[] = $nova->id;
-                }
-            }
-
-            if (!empty($idsMantidos)) {
-                $planning->linhas()->whereNotIn('id', $idsMantidos)->delete();
+            if (! $atualizado) {
+                return response()->json(['sucesso' => false, 'mensagem' => 'Planejamento não encontrado.'], 404);
             }
 
             return response()->json([
                 'sucesso' => true,
                 'mensagem' => 'Planejamento atualizado com sucesso.',
             ]);
-        });
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 500);
+        }
     }
 
     protected function deletePlanning(Request $request, string $perfil, ?int $userId)
@@ -183,20 +182,278 @@ class PlanningApiController extends Controller
             return response()->json(['sucesso' => false, 'mensagem' => 'ID inválido.'], 422);
         }
 
-        $planning = Planning::query()
-            ->when($perfil !== 'Administrador' && $userId, fn ($q) => $q->where('login', $userId))
-            ->find($id);
+        $removido = Planning::delete(
+            $id,
+            $userId ? (int) $userId : null,
+            $perfil === 'Administrador'
+        );
 
-        if (!$planning) {
+        if (! $removido) {
             return response()->json(['sucesso' => false, 'mensagem' => 'Planejamento não encontrado.'], 404);
         }
-
-        $planning->delete();
 
         return response()->json([
             'sucesso' => true,
             'mensagem' => 'Planejamento excluído com sucesso.',
         ]);
+    }
+
+    protected function listarSalas(Profiles $perfil, ?int $schoolId): JsonResponse
+    {
+        $rooms = $this->reservations->getRoomsForSchool($schoolId);
+
+        return response()->json([
+            'sucesso' => true,
+            'salas' => array_map(static function ($room) {
+                return [
+                    'id' => $room->id,
+                    'nome' => $room->name,
+                    'capacidade' => $room->capacity,
+                    'localizacao' => $room->location,
+                    'descricao' => $room->description,
+                ];
+            }, $rooms),
+            'pode_aprovar' => PermissionMatrix::allows($perfil, PermissionMatrix::RESERVATIONS_APPROVE),
+        ]);
+    }
+
+    protected function listarReservas(Request $request, Profiles $perfil, ?int $schoolId, ?int $userId): JsonResponse
+    {
+        $filters = [];
+        if ($request->filled('room_id')) {
+            $filters['room_id'] = (int) $request->input('room_id');
+        }
+
+        if ($request->filled('planning_id')) {
+            $filters['planning_id'] = (int) $request->input('planning_id');
+        }
+
+        if ($request->filled('inicio')) {
+            $filters['starts_at'] = $this->normalizarData($request->input('inicio'));
+        }
+
+        if ($request->filled('fim')) {
+            $filters['ends_at'] = $this->normalizarData($request->input('fim'));
+        }
+
+        try {
+            $reservas = $this->reservations->listReservations($filters, $schoolId);
+            $canApprove = PermissionMatrix::allows($perfil, PermissionMatrix::RESERVATIONS_APPROVE);
+
+            return response()->json([
+                'sucesso' => true,
+                'reservas' => array_map(fn (RoomReservation $reserva) => $this->mapReserva($reserva, $userId, $canApprove), $reservas),
+                'pode_aprovar' => $canApprove,
+            ]);
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
+    protected function reservarSala(Request $request, Profiles $perfil, ?int $schoolId, ?int $userId): JsonResponse
+    {
+        if (! PermissionMatrix::allows($perfil, PermissionMatrix::RESERVATIONS_CREATE)) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Permissão insuficiente para reservar salas.',
+            ], 403);
+        }
+
+        $userId = $userId ? (int) $userId : null;
+        if ($userId === null) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Usuário não identificado para registrar a reserva.',
+            ], 401);
+        }
+
+        $roomId = (int) $request->input('room_id');
+        $planningId = (int) $request->input('planning_id');
+        $inicio = $this->normalizarData($request->input('inicio'));
+        $fim = $this->normalizarData($request->input('fim'));
+        $notes = $request->input('observacoes');
+
+        if ($roomId <= 0 || $planningId <= 0 || ! $inicio || ! $fim) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Sala, planejamento e horários são obrigatórios.',
+            ], 422);
+        }
+
+        $autoApprove = PermissionMatrix::allows($perfil, PermissionMatrix::RESERVATIONS_APPROVE);
+
+        try {
+            $reserva = $this->reservations->createReservation(
+                $roomId,
+                $planningId,
+                $userId,
+                $inicio,
+                $fim,
+                $autoApprove,
+                $notes ?: null,
+                null,
+                $schoolId,
+                $autoApprove
+            );
+
+            $mensagem = $autoApprove
+                ? 'Reserva confirmada com sucesso.'
+                : 'Reserva registrada e aguardando aprovação.';
+
+            return response()->json([
+                'sucesso' => true,
+                'mensagem' => $mensagem,
+                'reserva' => $this->mapReserva($reserva, $userId, $autoApprove),
+                'auto_aprovada' => $autoApprove,
+            ]);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 422);
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 400);
+        }
+    }
+
+    protected function aprovarReserva(Request $request, Profiles $perfil, ?int $schoolId, ?int $userId): JsonResponse
+    {
+        if (! PermissionMatrix::allows($perfil, PermissionMatrix::RESERVATIONS_APPROVE)) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Permissão insuficiente para aprovar reservas.',
+            ], 403);
+        }
+
+        $userId = $userId ? (int) $userId : null;
+        if ($userId === null) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Usuário não identificado para aprovar a reserva.',
+            ], 401);
+        }
+
+        $reservaId = (int) $request->input('reserva_id');
+        $decisao = (string) $request->input('decisao');
+        $comentario = $request->input('comentario');
+
+        $status = match (strtolower($decisao)) {
+            'aprovar' => RoomReservation::STATUS_APPROVED,
+            'rejeitar' => RoomReservation::STATUS_REJECTED,
+            'cancelar' => RoomReservation::STATUS_CANCELLED,
+            default => null,
+        };
+
+        if ($reservaId <= 0 || $status === null) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Dados inválidos para atualização da reserva.',
+            ], 422);
+        }
+
+        try {
+            $reserva = $this->reservations->updateStatus($reservaId, $status, $userId, $comentario ?: null, $schoolId);
+
+            $mensagem = match ($status) {
+                RoomReservation::STATUS_APPROVED => 'Reserva aprovada com sucesso.',
+                RoomReservation::STATUS_REJECTED => 'Reserva rejeitada com sucesso.',
+                RoomReservation::STATUS_CANCELLED => 'Reserva cancelada com sucesso.',
+                default => 'Reserva atualizada.',
+            };
+
+            return response()->json([
+                'sucesso' => true,
+                'mensagem' => $mensagem,
+                'reserva' => $this->mapReserva($reserva, $userId, true),
+            ]);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 422);
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 400);
+        }
+    }
+
+    protected function cancelarReserva(Request $request, Profiles $perfil, ?int $schoolId, ?int $userId): JsonResponse
+    {
+        $reservaId = (int) $request->input('reserva_id');
+        if ($reservaId <= 0) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Reserva inválida.',
+            ], 422);
+        }
+
+        $userId = $userId ? (int) $userId : null;
+        if ($userId === null) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => 'Usuário não autenticado para cancelar a reserva.',
+            ], 401);
+        }
+
+        try {
+            $reserva = $this->reservations->cancelReservation($reservaId, $userId, $schoolId);
+
+            return response()->json([
+                'sucesso' => true,
+                'mensagem' => 'Reserva cancelada com sucesso.',
+                'reserva' => $this->mapReserva($reserva, $userId, PermissionMatrix::allows($perfil, PermissionMatrix::RESERVATIONS_APPROVE)),
+            ]);
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'sucesso' => false,
+                'mensagem' => $exception->getMessage(),
+            ], 400);
+        }
+    }
+
+    protected function mapReserva(RoomReservation $reserva, ?int $userId, bool $canApprove): array
+    {
+        return [
+            'id' => $reserva->id,
+            'room_id' => $reserva->roomId,
+            'sala' => $reserva->roomName,
+            'inicio' => $reserva->startsAt->format('c'),
+            'fim' => $reserva->endsAt->format('c'),
+            'status' => $reserva->status,
+            'solicitante' => $reserva->reservedByName,
+            'aprovador' => $reserva->approvedByName,
+            'aprovado_em' => $reserva->approvedAt?->format('c'),
+            'observacoes' => $reserva->notes,
+            'pode_aprovar' => $canApprove && $reserva->isPending(),
+            'pode_cancelar' => $userId !== null && $reserva->reservedBy === $userId,
+        ];
+    }
+
+    protected function normalizarData(?string $valor): ?string
+    {
+        if ($valor === null) {
+            return null;
+        }
+
+        $valor = trim((string) $valor);
+        if ($valor === '') {
+            return null;
+        }
+
+        $valor = str_replace('T', ' ', $valor);
+        if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $valor) === 1) {
+            $valor .= ':00';
+        }
+
+        return $valor;
     }
 
     protected function bnccResponse(Request $request)
@@ -247,133 +504,184 @@ class PlanningApiController extends Controller
 
     protected function bnccLista(string $tabela, string $colunaId = 'id', string $colunaLabel = 'nome', array $filtros = []): array
     {
-        if (!Schema::hasTable($tabela)) {
+        if (!LegacySchema::hasTable($tabela)) {
             return [];
         }
 
-        $query = DB::table($tabela)
-            ->select([$colunaId . ' as id', $colunaLabel . ' as label']);
+        $colunaId = $this->sanitizeIdentifier($colunaId, 'id');
+        $colunaLabel = $this->sanitizeIdentifier($colunaLabel, 'nome');
 
+        $conditions = [];
+        $params = [];
         foreach ($filtros as $coluna => $valor) {
-            if ($valor !== null && $valor !== '' && Schema::hasColumn($tabela, $coluna)) {
-                $query->where($coluna, $valor);
+            if ($valor === null || $valor === '') {
+                continue;
             }
+
+            $coluna = $this->sanitizeIdentifier($coluna, $coluna);
+            if (!LegacySchema::hasColumn($tabela, $coluna)) {
+                continue;
+            }
+
+            $param = 'f_' . $coluna . count($params);
+            $conditions[] = sprintf('%s = :%s', $coluna, $param);
+            $params[$param] = $valor;
         }
 
-        return $query
-            ->orderBy($colunaLabel)
-            ->get()
-            ->map(fn ($item) => ['id' => (string) $item->id, 'label' => (string) $item->label])
-            ->all();
+        $sql = sprintf('SELECT %s AS id, %s AS label FROM %s', $colunaId, $colunaLabel, $tabela);
+        if ($conditions) {
+            $sql .= ' WHERE ' . implode(' AND ', $conditions);
+        }
+        $sql .= ' ORDER BY ' . $colunaLabel;
+
+        $rows = LegacyDatabase::select($sql, $params);
+
+        return array_map(static function (array $row): array {
+            return [
+                'id' => (string) ($row['id'] ?? ''),
+                'label' => (string) ($row['label'] ?? ''),
+            ];
+        }, $rows);
     }
 
     protected function bnccListaAnos(int|string|null $etapaId = null): array
     {
-        if (!Schema::hasTable('bncc_anos')) {
+        if (!LegacySchema::hasTable('bncc_anos')) {
             return [];
         }
 
-        $query = DB::table('bncc_anos')
-            ->select('ano')
-            ->distinct()
-            ->orderBy('ano');
+        $sql = 'SELECT DISTINCT ano FROM bncc_anos';
+        $params = [];
 
-        if ($etapaId !== null && $etapaId !== '' && Schema::hasColumn('bncc_anos', 'id_etapa')) {
-            $query->where('id_etapa', $etapaId);
+        if ($etapaId !== null && $etapaId !== '' && LegacySchema::hasColumn('bncc_anos', 'id_etapa')) {
+            $sql .= ' WHERE id_etapa = :etapa';
+            $params['etapa'] = $etapaId;
         }
 
-        return $query->pluck('ano')
-            ->filter(fn ($valor) => $valor !== null && $valor !== '')
-            ->map(fn ($ano) => ['id' => (string) $ano, 'label' => (string) $ano])
-            ->values()
-            ->all();
+        $sql .= ' ORDER BY ano';
+
+        $valores = LegacyDatabase::column($sql, $params);
+
+        $resultado = [];
+        foreach ($valores as $valor) {
+            if ($valor === null || $valor === '') {
+                continue;
+            }
+            $resultado[] = ['id' => (string) $valor, 'label' => (string) $valor];
+        }
+
+        return $resultado;
     }
 
     protected function bnccLookup(string $tabela, string $colunaLabel = 'nome'): array
     {
-        if (!Schema::hasTable($tabela)) {
+        if (!LegacySchema::hasTable($tabela)) {
             return [];
         }
 
-        return DB::table($tabela)
-            ->select(['id', $colunaLabel . ' as label'])
-            ->orderBy($colunaLabel)
-            ->pluck('label', 'id')
-            ->map(fn ($label) => (string) $label)
-            ->all();
+        $colunaLabel = $this->sanitizeIdentifier($colunaLabel, 'nome');
+
+        $sql = sprintf('SELECT id, %s AS label FROM %s ORDER BY %s', $colunaLabel, $tabela, $colunaLabel);
+        $rows = LegacyDatabase::select($sql);
+
+        $resultado = [];
+        foreach ($rows as $row) {
+            if (! isset($row['id'])) {
+                continue;
+            }
+            $resultado[(string) $row['id']] = (string) ($row['label'] ?? '');
+        }
+
+        return $resultado;
     }
 
     protected function bnccLookupAnos(): array
     {
-        if (!Schema::hasTable('bncc_anos')) {
+        if (!LegacySchema::hasTable('bncc_anos')) {
             return [];
         }
 
-        return DB::table('bncc_anos')
-            ->select('ano')
-            ->distinct()
-            ->orderBy('ano')
-            ->pluck('ano')
-            ->filter(fn ($valor) => $valor !== null && $valor !== '')
-            ->mapWithKeys(fn ($ano) => [(string) $ano => (string) $ano])
-            ->all();
+        $valores = LegacyDatabase::column('SELECT DISTINCT ano FROM bncc_anos ORDER BY ano');
+
+        $resultado = [];
+        foreach ($valores as $valor) {
+            if ($valor === null || $valor === '') {
+                continue;
+            }
+
+            $resultado[(string) $valor] = (string) $valor;
+        }
+
+        return $resultado;
     }
 
     protected function bnccListaHabilidades(array $filtros = []): array
     {
-        if (!Schema::hasTable('bncc_habilidades')) {
+        if (!LegacySchema::hasTable('bncc_habilidades')) {
             return [];
         }
 
-        $query = DB::table('bncc_habilidades')
-            ->select(['id', 'codigo', 'descricao']);
+        $sql = 'SELECT id, codigo, descricao FROM bncc_habilidades';
+        $params = [];
 
         if (!empty($filtros['id_objeto'])) {
-            $query->where('id_objeto', $filtros['id_objeto']);
+            $sql .= ' WHERE id_objeto = :objeto';
+            $params['objeto'] = $filtros['id_objeto'];
         }
 
-        return $query
-            ->orderBy('codigo')
-            ->get()
-            ->map(function ($item) {
-                $label = trim(sprintf('%s – %s', $item->codigo, $item->descricao));
+        $sql .= ' ORDER BY codigo';
 
-                return [
-                    'id' => (string) $item->id,
-                    'label' => $label,
-                    'codigo' => (string) $item->codigo,
-                ];
-            })
-            ->all();
+        $rows = LegacyDatabase::select($sql, $params);
+
+        return array_map(static function (array $row): array {
+            $codigo = (string) ($row['codigo'] ?? '');
+            $descricao = (string) ($row['descricao'] ?? '');
+            $label = trim($codigo !== '' ? sprintf('%s – %s', $codigo, $descricao) : $descricao);
+
+            return [
+                'id' => (string) ($row['id'] ?? ''),
+                'label' => $label,
+                'codigo' => $codigo,
+            ];
+        }, $rows);
     }
 
     protected function bnccLookupHabilidades(bool $porCodigo = false): array
     {
-        if (!Schema::hasTable('bncc_habilidades')) {
+        if (!LegacySchema::hasTable('bncc_habilidades')) {
             return [];
         }
 
-        $colunaChave = $porCodigo ? 'codigo' : 'id';
+        $coluna = $porCodigo ? 'codigo' : 'id';
+        $coluna = $this->sanitizeIdentifier($coluna, $porCodigo ? 'codigo' : 'id');
 
-        return DB::table('bncc_habilidades')
-            ->select([$colunaChave, 'codigo', 'descricao'])
-            ->orderBy('codigo')
-            ->get()
-            ->mapWithKeys(function ($item) use ($colunaChave) {
-                $label = trim(sprintf('%s – %s', $item->codigo, $item->descricao));
-                $key = $colunaChave === 'codigo' ? (string) $item->codigo : (string) $item->id;
+        $sql = sprintf('SELECT %s AS chave, codigo, descricao FROM bncc_habilidades ORDER BY codigo', $coluna);
+        $rows = LegacyDatabase::select($sql);
 
-                return [$key => $label];
-            })
-            ->all();
+        $resultado = [];
+        foreach ($rows as $row) {
+            if (! isset($row['chave'])) {
+                continue;
+            }
+            $codigo = (string) ($row['codigo'] ?? '');
+            $descricao = (string) ($row['descricao'] ?? '');
+            $resultado[(string) $row['chave']] = trim($codigo !== '' ? sprintf('%s – %s', $codigo, $descricao) : $descricao);
+        }
+
+        return $resultado;
     }
 
     protected function filtros(Request $request, array $chaves): array
     {
-        return collect($chaves)
-            ->mapWithKeys(fn ($chave) => [$chave => $request->input($chave)])
-            ->filter(fn ($valor) => $valor !== null && $valor !== '')
-            ->all();
+        $resultado = [];
+        foreach ($chaves as $chave) {
+            $valor = $request->input($chave);
+            if ($valor !== null && $valor !== '') {
+                $resultado[$chave] = $valor;
+            }
+        }
+
+        return $resultado;
     }
 
     protected function extractPayload(Request $request): array
@@ -390,10 +698,15 @@ class PlanningApiController extends Controller
             'tempo' => $request->integer('tempo', 1),
         ];
 
-        $linhas = collect(json_decode($request->input('linhas_serializadas', '[]'), true) ?: [])
-            ->filter(fn ($linha) => !empty($linha['etapa']))
-            ->map(function ($linha) {
-                return [
+        $raw = json_decode((string) $request->input('linhas_serializadas', '[]'), true);
+        $linhas = [];
+        if (is_array($raw)) {
+            foreach ($raw as $linha) {
+                if (!is_array($linha) || empty($linha['etapa'])) {
+                    continue;
+                }
+
+                $linhas[] = [
                     'id' => $linha['id'] ?? null,
                     'etapa' => $linha['etapa'],
                     'ano' => $linha['ano'] ?? null,
@@ -406,7 +719,8 @@ class PlanningApiController extends Controller
                     'metodologias' => $linha['metodologias'] ?? null,
                     'grupo' => $linha['grupo'] ?? null,
                 ];
-            })->values()->all();
+            }
+        }
 
         return [$dados, $linhas];
     }
@@ -414,13 +728,28 @@ class PlanningApiController extends Controller
     protected function csv($value): ?string
     {
         if (is_array($value)) {
-            return collect($value)
-                ->filter(fn ($item) => filled($item))
-                ->map(fn ($item) => Str::of($item)->trim())
-                ->implode(',');
+            $items = [];
+            foreach ($value as $item) {
+                if ($item === null) {
+                    continue;
+                }
+
+                $texto = trim((string) $item);
+                if ($texto !== '') {
+                    $items[] = $texto;
+                }
+            }
+
+            return $items ? implode(',', $items) : null;
         }
 
-        return $value ? (string) $value : null;
+        if ($value === null) {
+            return null;
+        }
+
+        $texto = trim((string) $value);
+
+        return $texto !== '' ? $texto : null;
     }
 
     protected function mapCabecalho(array $dados): array
@@ -472,5 +801,10 @@ class PlanningApiController extends Controller
             'metodologias' => $dados['metodologias'] ?? null,
             'grupo' => $dados['grupo'] ?? null,
         ];
+    }
+
+    protected function sanitizeIdentifier(string $valor, string $fallback = 'id'): string
+    {
+        return preg_match('/^[A-Za-z0-9_]+$/', $valor) ? $valor : $fallback;
     }
 }

@@ -4,6 +4,9 @@ let idPlanejamentoMensalParaExcluir = null;
 let formPlanejamentoMensal = null;
 let choicesAnos = null;
 let __HTML_ADD_LINHA__ = null;  // armazena o template bruto de add-linha.php
+let selectSalaReserva = null;
+let podeAprovarReservas = window.usuarioPodeAprovarReserva === true || window.usuarioPodeAprovarReserva === 'true';
+let reservasPlanejamento = [];
 
 
 
@@ -128,9 +131,11 @@ if (window.jQuery) {
     salvarCadastroPlanejamentoMensal();
   });
 
+  inicializarReservasSalas();
+
   // Botões "Editar" da listagem (ID baseado em dataset)
-	 document.querySelectorAll('[data-action="editar-plano"]').forEach(btn => {
-	  btn.onclick = () => {
+         document.querySelectorAll('[data-action="editar-plano"]').forEach(btn => {
+          btn.onclick = () => {
 		const id = parseInt(btn.getAttribute('data-id'), 10);
 		editarPlanejamentoMensal(id);
 	  };
@@ -222,6 +227,8 @@ function abrirCadastroPlanejamentoMensal() {
   document.querySelectorAll('.bloco-planejamento').forEach(el => el.remove());
   document.getElementById('crudPlanejamentoMensalContainer')
           .classList.remove('oculto');
+  limparFormularioReserva();
+  renderReservas([]);
 }
 
 async function salvarCadastroPlanejamentoMensal() {
@@ -270,10 +277,346 @@ async function salvarCadastroPlanejamentoMensal() {
     // ② Reseta só campos visíveis, sem perder o ID
     formPlanejamentoMensal.reset();
     document.getElementById('id-planejamento-mensal').value = idAtual;
+    if (idAtual) {
+      await carregarReservasPlanejamento(idAtual);
+    }
 
   } catch (e) {
     console.error('Erro no fetch:', e);
     mostrarAlerta('Erro de comunicação com o servidor.', 'danger');
+  }
+}
+
+
+/* ─── Agendamento de salas ──────────────────────────── */
+function inicializarReservasSalas() {
+  selectSalaReserva = document.getElementById('reserva-sala');
+  if (!selectSalaReserva) {
+    return;
+  }
+
+  carregarSalasReserva();
+
+  const btnDisponibilidade = document.getElementById('btnVerDisponibilidade');
+  btnDisponibilidade?.addEventListener('click', event => {
+    event.preventDefault();
+    const filtros = obterFiltrosReservas();
+    carregarReservas(filtros);
+  });
+
+  const btnReservar = document.getElementById('btnReservarSala');
+  btnReservar?.addEventListener('click', solicitarReservaSala);
+
+  const tabela = document.getElementById('tabelaReservasPlanejamento');
+  tabela?.addEventListener('click', delegarAcaoReserva);
+}
+
+function limparFormularioReserva() {
+  document.getElementById('reserva-inicio')?.value = '';
+  document.getElementById('reserva-fim')?.value = '';
+  document.getElementById('reserva-observacoes')?.value = '';
+  if (selectSalaReserva) {
+    selectSalaReserva.value = '';
+  }
+  reservasPlanejamento = [];
+}
+
+async function carregarSalasReserva() {
+  if (!selectSalaReserva) {
+    return;
+  }
+
+  try {
+    const resp = await fetch('includes/action-planejamento-mensal.php?acao=listar_salas');
+    const json = await resp.json();
+    if (!json.sucesso) {
+      mostrarAlerta(json.mensagem || 'Falha ao carregar salas.', 'warning');
+      return;
+    }
+
+    if (typeof json.pode_aprovar === 'boolean') {
+      podeAprovarReservas = json.pode_aprovar;
+    }
+
+    const salas = Array.isArray(json.salas) ? json.salas : [];
+    selectSalaReserva.innerHTML = '<option value="">Selecione uma sala</option>';
+    salas.forEach(sala => {
+      const option = document.createElement('option');
+      option.value = sala.id;
+      const capacidade = sala.capacidade ? ` (${sala.capacidade} lugares)` : '';
+      option.textContent = `${sala.nome}${capacidade}`;
+      selectSalaReserva.appendChild(option);
+    });
+  } catch (erro) {
+    console.error('Erro ao carregar salas:', erro);
+    mostrarAlerta('Erro ao carregar salas.', 'danger');
+  }
+}
+
+function obterFiltrosReservas() {
+  const filtros = {};
+  const planningId = document.getElementById('id-planejamento-mensal')?.value;
+  const inicio = document.getElementById('reserva-inicio')?.value;
+  const fim = document.getElementById('reserva-fim')?.value;
+  const salaSelecionada = Number(selectSalaReserva?.value || 0);
+
+  if (planningId) filtros.planning_id = planningId;
+  if (salaSelecionada) filtros.room_id = salaSelecionada;
+  if (inicio) filtros.inicio = inicio;
+  if (fim) filtros.fim = fim;
+
+  return filtros;
+}
+
+async function carregarReservas(filtros = {}) {
+  const params = new URLSearchParams({ acao: 'listar_reservas' });
+  Object.entries(filtros).forEach(([chave, valor]) => {
+    if (valor !== undefined && valor !== null && valor !== '') {
+      params.append(chave, valor);
+    }
+  });
+
+  try {
+    const resp = await fetch(`includes/action-planejamento-mensal.php?${params.toString()}`);
+    const json = await resp.json();
+    if (!json.sucesso) {
+      mostrarAlerta(json.mensagem || 'Falha ao carregar reservas.', 'warning');
+      return;
+    }
+
+    if (typeof json.pode_aprovar === 'boolean') {
+      podeAprovarReservas = json.pode_aprovar;
+    }
+
+    renderReservas(Array.isArray(json.reservas) ? json.reservas : []);
+  } catch (erro) {
+    console.error('Erro ao listar reservas:', erro);
+    mostrarAlerta('Erro ao carregar reservas.', 'danger');
+  }
+}
+
+async function carregarReservasPlanejamento(planningId) {
+  if (!planningId) {
+    renderReservas([]);
+    return;
+  }
+
+  await carregarReservas({ planning_id: planningId });
+}
+
+async function solicitarReservaSala() {
+  const planningId = document.getElementById('id-planejamento-mensal')?.value;
+  if (!planningId) {
+    mostrarAlerta('Salve o planejamento antes de solicitar uma reserva.', 'warning');
+    return;
+  }
+
+  const filtros = obterFiltrosReservas();
+  if (!filtros.room_id || !filtros.inicio || !filtros.fim) {
+    mostrarAlerta('Selecione a sala e informe início e fim da reserva.', 'warning');
+    return;
+  }
+
+  const body = new URLSearchParams({
+    acao: 'reservar_sala',
+    room_id: filtros.room_id,
+    planning_id: planningId,
+    inicio: filtros.inicio,
+    fim: filtros.fim,
+    observacoes: document.getElementById('reserva-observacoes')?.value || '',
+  });
+
+  try {
+    const resp = await fetch('includes/action-planejamento-mensal.php', {
+      method: 'POST',
+      body,
+    });
+    const json = await resp.json();
+    if (!json.sucesso) {
+      mostrarAlerta(json.mensagem || 'Falha ao registrar reserva.', 'warning');
+      return;
+    }
+
+    mostrarAlerta(json.mensagem || 'Reserva registrada.', 'success');
+    limparFormularioReserva();
+    await carregarReservasPlanejamento(planningId);
+  } catch (erro) {
+    console.error('Erro ao reservar sala:', erro);
+    mostrarAlerta('Erro ao registrar reserva.', 'danger');
+  }
+}
+
+function formatarDataHora(valor) {
+  if (!valor) {
+    return '-';
+  }
+  try {
+    const normalizado = valor.replace(' ', 'T');
+    const data = new Date(normalizado);
+    if (Number.isNaN(data.getTime())) {
+      return valor;
+    }
+    return data.toLocaleString('pt-BR');
+  } catch (erro) {
+    return valor;
+  }
+}
+
+function traduzStatusReserva(status) {
+  switch ((status || '').toLowerCase()) {
+    case 'pending':
+      return 'Pendente';
+    case 'approved':
+      return 'Aprovada';
+    case 'rejected':
+      return 'Rejeitada';
+    case 'cancelled':
+      return 'Cancelada';
+    default:
+      return status || '-';
+  }
+}
+
+function escapeHtml(valor) {
+  if (valor === null || valor === undefined) {
+    return '';
+  }
+  return String(valor).replace(/[&<>"']/g, chr => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[chr]);
+}
+
+function montarAcoesReserva(reserva) {
+  const acoes = [];
+
+  if (reserva.pode_aprovar) {
+    acoes.push(`<button type="button" class="btn btn-outline-success btn-sm me-1" data-action="aprovar-reserva" data-id="${reserva.id}"><i class="fas fa-check"></i></button>`);
+    acoes.push(`<button type="button" class="btn btn-outline-warning btn-sm me-1" data-action="rejeitar-reserva" data-id="${reserva.id}"><i class="fas fa-times"></i></button>`);
+  }
+
+  if (reserva.pode_cancelar && reserva.status !== 'cancelled') {
+    acoes.push(`<button type="button" class="btn btn-outline-danger btn-sm" data-action="cancelar-reserva" data-id="${reserva.id}"><i class="fas fa-ban"></i></button>`);
+  }
+
+  if (!acoes.length) {
+    return '<span class="text-muted">-</span>';
+  }
+
+  return acoes.join('');
+}
+
+function renderReservas(reservas = []) {
+  const tbody = document.getElementById('tbodyReservasPlanejamento');
+  if (!tbody) {
+    return;
+  }
+
+  reservasPlanejamento = Array.isArray(reservas) ? reservas : [];
+
+  if (reservasPlanejamento.length === 0) {
+    tbody.innerHTML = '<tr class="estado-vazio"><td colspan="7" class="text-center text-muted">Nenhuma reserva registrada para este planejamento.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = reservasPlanejamento.map(reserva => {
+    const status = traduzStatusReserva(reserva.status);
+    const inicio = formatarDataHora(reserva.inicio);
+    const fim = formatarDataHora(reserva.fim);
+    const aprovador = reserva.aprovador
+      ? `${escapeHtml(reserva.aprovador)}${reserva.aprovado_em ? ` (${formatarDataHora(reserva.aprovado_em)})` : ''}`
+      : '-';
+
+    return `<tr data-id="${reserva.id}">
+      <td>${escapeHtml(reserva.sala ?? '-')}</td>
+      <td>${escapeHtml(inicio)}</td>
+      <td>${escapeHtml(fim)}</td>
+      <td>${escapeHtml(status)}</td>
+      <td>${escapeHtml(reserva.solicitante ?? '-')}</td>
+      <td>${aprovador}</td>
+      <td class="text-end">${montarAcoesReserva(reserva)}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function atualizarStatusReserva(reservaId, decisao) {
+  const body = new URLSearchParams({
+    acao: 'aprovar_reserva',
+    reserva_id: reservaId,
+    decisao,
+  });
+
+  try {
+    const resp = await fetch('includes/action-planejamento-mensal.php', {
+      method: 'POST',
+      body,
+    });
+    const json = await resp.json();
+    if (!json.sucesso) {
+      mostrarAlerta(json.mensagem || 'Falha ao atualizar reserva.', 'warning');
+      return;
+    }
+
+    mostrarAlerta(json.mensagem || 'Reserva atualizada.', 'success');
+    const planningId = document.getElementById('id-planejamento-mensal')?.value;
+    if (planningId) {
+      await carregarReservasPlanejamento(planningId);
+    }
+  } catch (erro) {
+    console.error('Erro ao atualizar status da reserva:', erro);
+    mostrarAlerta('Erro ao atualizar a reserva.', 'danger');
+  }
+}
+
+async function cancelarReserva(reservaId) {
+  const body = new URLSearchParams({
+    acao: 'cancelar_reserva',
+    reserva_id: reservaId,
+  });
+
+  try {
+    const resp = await fetch('includes/action-planejamento-mensal.php', {
+      method: 'POST',
+      body,
+    });
+    const json = await resp.json();
+    if (!json.sucesso) {
+      mostrarAlerta(json.mensagem || 'Falha ao cancelar reserva.', 'warning');
+      return;
+    }
+
+    mostrarAlerta(json.mensagem || 'Reserva cancelada.', 'success');
+    const planningId = document.getElementById('id-planejamento-mensal')?.value;
+    if (planningId) {
+      await carregarReservasPlanejamento(planningId);
+    }
+  } catch (erro) {
+    console.error('Erro ao cancelar reserva:', erro);
+    mostrarAlerta('Erro ao cancelar a reserva.', 'danger');
+  }
+}
+
+function delegarAcaoReserva(event) {
+  const alvo = event.target.closest('[data-action]');
+  if (!alvo) {
+    return;
+  }
+
+  const reservaId = Number(alvo.dataset.id || 0);
+  if (!reservaId) {
+    return;
+  }
+
+  const acao = alvo.dataset.action;
+  if (acao === 'aprovar-reserva') {
+    atualizarStatusReserva(reservaId, 'aprovar');
+  } else if (acao === 'rejeitar-reserva') {
+    atualizarStatusReserva(reservaId, 'rejeitar');
+  } else if (acao === 'cancelar-reserva') {
+    cancelarReserva(reservaId);
   }
 }
 
@@ -374,9 +717,11 @@ async function editarPlanejamentoMensal(id) {
       const idx = (Number(l.grupo) || 1) - 1;
       if (idx >= 0 && idx < qtd) dadosIniciais[idx] = l;
     });
-	rolarEDestacarPrimeiroDestaque();
+        rolarEDestacarPrimeiroDestaque();
     gerarBlocos(qtd, dadosIniciais);
     // cada bloco injetado já chama renderizarTabelaLinhas(gid)
+
+    await carregarReservasPlanejamento(id);
 
   } catch (err) {
     console.error('Erro ao carregar para edição:', err);
