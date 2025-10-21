@@ -11,16 +11,16 @@ $middleware = new AlunoMiddleware($guard);
 
 try {
     $middleware->handle($_SERVER, function ($request, $user) use (&$login, &$perfil, &$escola, &$nome, &$turma) {
-        $session = $GLOBALS['_SESSION'] ?? $_SESSION ?? [];
-        if (empty($session['matricula'])) {
+        $session = session();
+        if (! $session->get('matricula')) {
             throw new AuthorizationException('Matrícula não localizada.');
         }
 
         $login = $user->login;
         $perfil = $user->profile->value;
-        $escola = $user->school?->legacyName ?? ($session['escola'] ?? '');
-        $nome = $user->name ?: ($session['nome'] ?? '');
-        $turma = $session['turma'] ?? null;
+        $escola = $user->school?->legacyName ?? $session->get('escola', '');
+        $nome = $user->name ?: $session->get('nome', '');
+        $turma = $session->get('turma');
         $GLOBALS['auth_user'] = $user;
 
         return true;

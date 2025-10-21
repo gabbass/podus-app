@@ -174,6 +174,20 @@ if (!class_exists('LegacyConfig')) {
 
         public static function dbDsn(): string
         {
+            $connection = strtolower((string) self::env('DB_CONNECTION', 'mysql'));
+            if ($connection === 'sqlite') {
+                $database = (string) self::env('DB_DATABASE', ':memory:');
+                if ($database === '' || $database === ':memory:') {
+                    return 'sqlite::memory:';
+                }
+
+                if (! str_contains($database, DIRECTORY_SEPARATOR)) {
+                    $database = dirname(__DIR__) . '/' . ltrim($database, '/');
+                }
+
+                return 'sqlite:' . $database;
+            }
+
             $host = (string) self::env('DB_HOST', 'localhost');
             $port = self::env('DB_PORT');
             $dbname = self::env('DB_NAME', '');
@@ -195,11 +209,19 @@ if (!class_exists('LegacyConfig')) {
 
         public static function dbUser(): string
         {
+            if (strtolower((string) self::env('DB_CONNECTION', 'mysql')) === 'sqlite') {
+                return '';
+            }
+
             return (string) self::env('DB_USER', 'root');
         }
 
         public static function dbPassword(): string
         {
+            if (strtolower((string) self::env('DB_CONNECTION', 'mysql')) === 'sqlite') {
+                return '';
+            }
+
             return (string) self::env('DB_PASS', '');
         }
 
