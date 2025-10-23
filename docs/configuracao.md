@@ -10,11 +10,12 @@ de integração.
 
 | Variável | Descrição | Valor padrão (`.env.example`) |
 | --- | --- | --- |
-| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`, `DB_CHARSET` | Parâmetros de conexão com o MySQL. | `localhost`, `3306`, `por17324_universodosaber`, `por17324_agendeduuser`, `@u0E^XjizAs-`, `utf8` |
-| `APP_TITLE` | Título utilizado em páginas públicas. | `iDivas - Agenda on-line para Mulheres` |
-| `UI_MENUS_JSON` | Mapa JSON de menus por perfil (Professor, Administrador, Aluno). | Conteúdo idêntico ao menu atual | 
-| `MAIL_INVITE_*`, `MAIL_RECOVERY_*`, `MAIL_CONTACT_*` | Configurações SMTP para convites, recuperação de senha e formulário de contato. | Preenchidas com os servidores existentes |
-| `RECAPTCHA_SECRET_KEY`, `RECAPTCHA_SITE_KEY_CHECKBOX`, `RECAPTCHA_SITE_KEY_V3` | Chaves do Google reCAPTCHA (checkbox e v3). | Valores atuais do portal |
+| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`, `DB_CHARSET` | Parâmetros de conexão com o MySQL. | `127.0.0.1`, `3306`, `podus_app`, `podus_app`, `secret`, `utf8mb4` |
+| `QUEUE_CONNECTION`, `QUEUE_REDIS_*` | Configuração de filas do legado. | `sync`, `127.0.0.1`, `6379`, `null`, `0` |
+| `APP_TITLE` | Título utilizado em páginas públicas. | `Podus - Portal Educacional` |
+| `UI_MENUS_JSON` | Mapa JSON de menus por perfil (Professor, Administrador, Aluno). | Conteúdo idêntico ao menu atual |
+| `MAIL_INVITE_*`, `MAIL_RECOVERY_*`, `MAIL_CONTACT_*` | Configurações SMTP para convites, recuperação de senha e formulário de contato. | Host `mailhog`, porta `1025`, credenciais `podus-*@example.com` |
+| `RECAPTCHA_SECRET_KEY`, `RECAPTCHA_SITE_KEY_CHECKBOX`, `RECAPTCHA_SITE_KEY_V3` | Chaves do Google reCAPTCHA (checkbox e v3). | Valores de teste (`testing-*`) |
 
 Copie o bloco `UI_MENUS_JSON` inteiro e edite a estrutura com cuidado para
 manter um JSON válido. Utilize aspas simples ao redor do valor na `.env` para
@@ -24,10 +25,10 @@ preservar as aspas duplas internas.
 
 | Variável | Descrição | Padrão |
 | --- | --- | --- |
-| `APP_SIDEBAR_TITLE` | Texto exibido na lateral do painel. | `Universo Saber` |
+| `APP_SIDEBAR_TITLE` | Texto exibido na lateral do painel. | `Podus` |
 | `UPLOAD_MAX_SIZE_MB` | Limite (em MB) para uploads tratados pelo legado. O helper `LegacyConfig::uploadMaxSizeBytes()` converte para bytes. | `10` |
-| `MAIL_*_DEBUG_LEVEL` | Nível de debug do PHPMailer por canal (`invite`, `recovery`, `contact`). | `0` exceto convites (`2`) |
-| `MAIL_CONTACT_TO_ADDRESS`, `MAIL_CONTACT_CC_ADDRESS`, `MAIL_CONTACT_BCC_ADDRESS` | Destinatários extras do formulário de contato. | `contato@portaluniversodosaber.com.br` |
+| `MAIL_*_DEBUG_LEVEL` | Nível de debug do PHPMailer por canal (`invite`, `recovery`, `contact`). | `0` |
+| `MAIL_CONTACT_TO_ADDRESS`, `MAIL_CONTACT_CC_ADDRESS`, `MAIL_CONTACT_BCC_ADDRESS` | Destinatários extras do formulário de contato. | `suporte@example.com`, `null`, *(vazio)* |
 
 ## Como funciona a camada `LegacyConfig`
 
