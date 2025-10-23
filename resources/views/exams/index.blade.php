@@ -111,11 +111,56 @@
                                 <button class="btn-action btn-edit" data-action="editar-prova" data-id="{{ $prova->id }}"><i class="fas fa-edit"></i></button>
                                 <button class="btn-action btn-view" data-action="visualizar-prova" data-id="{{ $prova->id }}"><i class="fas fa-eye"></i></button>
                                 <button class="btn-action btn-delete" data-action="excluir-prova" data-id="{{ $prova->id }}"><i class="fas fa-trash"></i></button>
+                                <button class="btn-action btn-scan" data-action="scan-prova" data-id="{{ $prova->id }}" title="Enviar cartão para correção"><i class="fas fa-camera"></i></button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        <div id="examScanPanel" class="segundo-container oculto destaque mt-4">
+            <div id="scanLoading" class="overlay oculto">
+                <div class="spinner-border" role="status"></div>
+            </div>
+            <div class="page-title">
+                <h2>Correção automática de provas</h2>
+                <p id="examScanSubtitle">Envie o cartão de respostas digitalizado para correção automática.</p>
+            </div>
+            <form id="formExamScan" enctype="multipart/form-data">
+                <input type="hidden" id="scanExamId" name="exam_id">
+                <div class="row g-3 mb-3">
+                    <div class="col-md form-group">
+                        <label for="scanExamTitle" class="form-label">Prova selecionada</label>
+                        <input type="text" id="scanExamTitle" class="form-control" disabled>
+                    </div>
+                    <div class="col-md form-group">
+                        <label for="scanMatricula" class="form-label">Matrícula do aluno</label>
+                        <input type="text" id="scanMatricula" name="matricula" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-3 form-group">
+                    <label for="scanFile" class="form-label">Arquivo do cartão (imagem ou PDF)</label>
+                    <input type="file" id="scanFile" name="scan" class="form-control" accept="image/*,.pdf" required>
+                    <small id="scanAttemptsInfo" class="text-muted"></small>
+                </div>
+                <div class="text-end">
+                    <button type="submit" id="btnEnviarScan" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Enviar para correção
+                    </button>
+                    <button type="button" id="btnCancelarScan" class="btn btn-cancelar">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </form>
+            <div id="scanProgress" class="mt-4 oculto">
+                <h3>Status do processamento</h3>
+                <div id="scanProgressContent" class="scan-progress"></div>
+            </div>
+            <div id="scanHistory" class="mt-4 oculto">
+                <h3>Histórico de correções</h3>
+                <div id="scanHistoryList" class="scan-history"></div>
+            </div>
         </div>
     </div>
 

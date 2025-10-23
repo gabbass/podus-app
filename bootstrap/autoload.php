@@ -14,6 +14,10 @@ if (! class_exists('LegacyConfig')) {
     require_once __DIR__ . '/../config/legacy.php';
 }
 
+if (! class_exists('ExamOmrConfig')) {
+    require_once __DIR__ . '/../config/exam_omr.php';
+}
+
 require_once __DIR__ . '/../app/Support/helpers.php';
 
 require_once __DIR__ . '/events.php';

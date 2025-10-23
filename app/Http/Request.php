@@ -8,11 +8,13 @@ class Request
      * @param array<string,mixed> $query
      * @param array<string,mixed> $body
      * @param array<string,mixed> $attributes
+     * @param array<string,mixed> $files
      */
     public function __construct(
         private array $query = [],
         private array $body = [],
         private array $attributes = [],
+        private array $files = [],
         private mixed $user = null
     ) {
     }
@@ -30,7 +32,12 @@ class Request
             }
         }
 
-        return new self($_GET, $input, []);
+        $files = $_FILES;
+        if (!is_array($files)) {
+            $files = [];
+        }
+
+        return new self($_GET, $input, [], $files);
     }
 
     public function input(string $key, mixed $default = null): mixed
@@ -69,5 +76,34 @@ class Request
     public function user(): mixed
     {
         return $this->user;
+    }
+
+    /**
+     * @return array<string,mixed>|null
+     */
+    public function file(string $key): ?array
+    {
+        $file = $this->files[$key] ?? null;
+
+        return is_array($file) ? $file : null;
+    }
+
+    public function hasFile(string $key): bool
+    {
+        $file = $this->file($key);
+        if ($file === null) {
+            return false;
+        }
+
+        $tmp = $file['tmp_name'] ?? null;
+        if (!is_string($tmp) || $tmp === '') {
+            return false;
+        }
+
+        if (is_uploaded_file($tmp)) {
+            return true;
+        }
+
+        return file_exists($tmp);
     }
 }
