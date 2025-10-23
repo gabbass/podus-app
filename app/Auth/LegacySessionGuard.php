@@ -3,14 +3,16 @@
 namespace App\Auth;
 
 use App\Models\User;
+use App\Support\Session\SessionManager;
+use App\Support\Session\SessionStore;
 
 class LegacySessionGuard
 {
-    protected array $session;
+    protected SessionStore $session;
     protected UserRepository $repository;
     protected ?User $cachedUser = null;
 
-    public function __construct(array $session, ?UserRepository $repository = null)
+    public function __construct(SessionStore $session, ?UserRepository $repository = null)
     {
         $this->session = $session;
         $this->repository = $repository ?? new UserRepository();
@@ -18,11 +20,7 @@ class LegacySessionGuard
 
     public static function fromGlobals(?UserRepository $repository = null): self
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        return new self($_SESSION ?? [], $repository);
+        return new self(SessionManager::instance(), $repository);
     }
 
     public function user(): ?User
@@ -31,7 +29,7 @@ class LegacySessionGuard
             return $this->cachedUser;
         }
 
-        $this->cachedUser = $this->repository->syncFromSession($this->session);
+        $this->cachedUser = $this->repository->syncFromSession($this->session->all());
         return $this->cachedUser;
     }
 
@@ -40,8 +38,11 @@ class LegacySessionGuard
         return $this->user() instanceof User;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function session(): array
     {
-        return $this->session;
+        return $this->session->all();
     }
 }

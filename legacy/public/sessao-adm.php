@@ -13,8 +13,8 @@ try {
     $middleware->handle($_SERVER, function ($request, $user) use (&$login, &$perfil, &$cliente, &$cpf) {
         $login = $user->login;
         $perfil = $user->profile->value;
-        $cliente = $user->school?->clientCode ?? ($_SESSION['cliente'] ?? null);
-        $cpf = $_SESSION['cpf'] ?? null;
+        $cliente = $user->school?->clientCode ?? session('cliente');
+        $cpf = session('cpf');
         $GLOBALS['auth_user'] = $user;
 
         return true;

@@ -16,6 +16,7 @@ class SyncExamWithMoodle
     private ?int $timeClose;
     private ?int $timeLimitMinutes;
     private float $maxGrade;
+    private ?MoodleClient $client;
 
     public function __construct(
         int $examId,
@@ -25,7 +26,8 @@ class SyncExamWithMoodle
         ?int $timeOpen = null,
         ?int $timeClose = null,
         ?int $timeLimitMinutes = null,
-        float $maxGrade = 10.0
+        float $maxGrade = 10.0,
+        ?MoodleClient $client = null
     ) {
         $this->examId = $examId;
         $this->courseId = $courseId;
@@ -35,11 +37,12 @@ class SyncExamWithMoodle
         $this->timeClose = $timeClose;
         $this->timeLimitMinutes = $timeLimitMinutes;
         $this->maxGrade = $maxGrade;
+        $this->client = $client;
     }
 
     public function handle(): void
     {
-        $client = MoodleClient::fromEnv();
+        $client = $this->client ?? MoodleClient::fromEnv();
         $payload = [
             'quizzes' => [
                 [

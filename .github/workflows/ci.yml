@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+          extensions: sqlite3
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Laravel Pint
+        run: vendor/bin/pint --test
+
+      - name: Run PHP_CodeSniffer
+        run: vendor/bin/phpcs
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse
+
+      - name: Run PHPUnit with coverage
+        run: vendor/bin/phpunit --coverage-clover build/coverage.xml --coverage-text --min-coverage=80

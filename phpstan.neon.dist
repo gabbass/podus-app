@@ -1,0 +1,7 @@
+parameters:
+    level: 6
+    paths:
+        - app
+    bootstrapFiles:
+        - bootstrap/autoload.php
+    tmpDir: var/phpstan

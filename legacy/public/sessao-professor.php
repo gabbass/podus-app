@@ -13,9 +13,9 @@ try {
     $middleware->handle($_SERVER, function ($request, $user) use (&$login, &$perfil, &$escola, &$nome, &$id_professor) {
         $login = $user->login;
         $perfil = $user->profile->value;
-        $escola = $user->school?->legacyName ?? ($_SESSION['escola'] ?? null);
+        $escola = $user->school?->legacyName ?? session('escola');
         $nome = $user->name;
-        $id_professor = $user->id ?? ($_SESSION['id'] ?? null);
+        $id_professor = $user->id ?? session('id');
         $GLOBALS['auth_user'] = $user;
 
         return true;
