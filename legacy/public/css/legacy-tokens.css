@@ -1,0 +1,66 @@
+:root {
+    /* Color system */
+    --color-primary: #0057b7;
+    --color-primary-dark: #003d7a;
+    --color-secondary: #ffa500;
+    --color-secondary-dark: #cc8400;
+    --color-accent: #ffb74d;
+    --color-surface: #ffffff;
+    --color-surface-subtle: #f5f7fa;
+    --color-surface-strong: #e1e5eb;
+    --color-border: #d5d9df;
+    --color-border-strong: #b7bdc6;
+    --color-text: #1f2933;
+    --color-text-muted: #6c757d;
+    --color-success: #2f855a;
+    --color-danger: #c53030;
+
+    /* Typography */
+    --font-family-base: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.85rem);
+    --font-size-sm: clamp(0.85rem, 0.8rem + 0.25vw, 0.95rem);
+    --font-size-base: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
+    --font-size-lg: clamp(1.2rem, 1.1rem + 0.4vw, 1.4rem);
+    --font-size-xl: clamp(1.6rem, 1.4rem + 0.6vw, 2.1rem);
+    --font-size-xxl: clamp(2rem, 1.8rem + 0.8vw, 2.8rem);
+
+    /* Spacing scale */
+    --space-3xs: clamp(0.15rem, 0.12rem + 0.1vw, 0.25rem);
+    --space-2xs: clamp(0.25rem, 0.2rem + 0.15vw, 0.4rem);
+    --space-xs: clamp(0.5rem, 0.45rem + 0.2vw, 0.75rem);
+    --space-sm: clamp(0.75rem, 0.65rem + 0.25vw, 1rem);
+    --space-md: clamp(1rem, 0.85rem + 0.4vw, 1.5rem);
+    --space-lg: clamp(1.5rem, 1.2rem + 0.5vw, 2rem);
+    --space-xl: clamp(2rem, 1.7rem + 0.6vw, 2.75rem);
+    --space-2xl: clamp(3rem, 2.5rem + 0.8vw, 3.5rem);
+
+    /* Layout tokens */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1.25rem;
+    --shadow-soft: 0 0.75rem 2rem rgba(15, 23, 42, 0.08);
+    --shadow-elevated: 0 1.25rem 2.75rem rgba(15, 23, 42, 0.14);
+
+    --sidebar-width-expanded: clamp(15.5rem, 18vw, 20rem);
+    --sidebar-width-collapsed: clamp(4rem, 5vw, 5.5rem);
+    --sidebar-width-overlay: clamp(16rem, 72vw, 22rem);
+    --header-height: clamp(3.5rem, 3rem + 1vw, 4.5rem);
+    --layout-max-width: 80rem;
+    --layout-content-width: min(100%, var(--layout-max-width));
+    --content-max-width: min(100%, 70rem);
+
+    /* Breakpoints */
+    --breakpoint-sm: 36rem;
+    --breakpoint-md: 48rem;
+    --breakpoint-lg: 64rem;
+    --breakpoint-xl: 80rem;
+}
+
+@custom-media --viewport-sm (min-width: 36rem);
+@custom-media --viewport-md (min-width: 48rem);
+@custom-media --viewport-lg (min-width: 64rem);
+@custom-media --viewport-xl (min-width: 80rem);

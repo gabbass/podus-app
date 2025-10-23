@@ -6,27 +6,35 @@ $perfil = $_SESSION['perfil'] ?? '';
 $menus = LegacyConfig::menuForProfile($perfil);
 $sidebarTitle = LegacyConfig::sidebarTitle();
 ?>
-<aside class="sidebar active" id="sidebar">
-    <div class="sidebar-header">
-        <h3><?php echo htmlspecialchars($sidebarTitle, ENT_QUOTES, 'UTF-8'); ?></h3>
-        <button class="close-sidebar" id="close-sidebar" onclick="document.querySelector('.sidebar').classList.remove('active')" >&times;</button>
+<aside id="sidebar" class="layout-sidebar sidebar" data-menu-component>
+    <div class="layout-sidebar__header sidebar-header">
+        <div class="layout-sidebar__title">
+            <h3><?= htmlspecialchars($sidebarTitle, ENT_QUOTES, 'UTF-8'); ?></h3>
+        </div>
+        <button class="layout-sidebar__close close-sidebar" id="close-sidebar" type="button" aria-label="Fechar menu">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-   <ul class="sidebar-menu">
-    <?php
-    if (!empty($menus)) {
-        foreach ($menus as $item) {
-            [$label, $file, $icon] = $item;
-            $active = $currentPage === $file ? 'active' : '';
-            echo <<<HTML
-            <li>
-                <a href="$file" class="$active"><i class="fa $icon"></i> <span>$label</span></a>
-            </li>
-            HTML;
-        }
-    }
-    ?>
-</ul>
-
+    <nav class="layout-sidebar__nav" aria-label="Menu principal">
+        <ul class="layout-sidebar__list sidebar-menu">
+            <?php if (!empty($menus)): ?>
+                <?php foreach ($menus as $item): ?>
+                    <?php
+                        [$label, $file, $icon] = $item;
+                        $active = $currentPage === $file;
+                    ?>
+                    <li class="layout-sidebar__item">
+                        <a href="<?= htmlspecialchars($file, ENT_QUOTES, 'UTF-8'); ?>"
+                           class="layout-sidebar__link<?= $active ? ' is-active' : ''; ?>"
+                           <?= $active ? 'aria-current="page"' : ''; ?>>
+                            <?php if (!empty($icon)): ?>
+                                <i class="fa <?= htmlspecialchars($icon, ENT_QUOTES, 'UTF-8'); ?>" aria-hidden="true"></i>
+                            <?php endif; ?>
+                            <span class="layout-sidebar__label"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+    </nav>
 </aside>
-
-<script src="js/pusaber.js"></script>
