@@ -2,6 +2,8 @@
     'title' => config('app.name', 'Portal Universo do Saber'),
     'items' => [],
     'current' => null,
+    'collapsed' => false,
+    'overlayOpen' => false,
 ])
 
 @php
@@ -22,30 +24,51 @@
     $current = $current ?? request()->path();
 @endphp
 
-<aside class="sidebar active" id="sidebar" data-menu-component>
-    <div class="sidebar-header">
-        <h3>{{ $title }}</h3>
-        <button class="close-sidebar" id="close-sidebar" type="button" aria-label="Fechar menu">
-            &times;
+@php
+    $sidebarClasses = [
+        'layout-sidebar',
+        'sidebar',
+        'active' => $overlayOpen,
+    ];
+@endphp
+
+<aside id="sidebar"
+       data-menu-component
+       @class($sidebarClasses)
+       @if ($collapsed)
+           data-sidebar-collapsed="1"
+       @endif>
+    <div class="layout-sidebar__header sidebar-header">
+        <div class="layout-sidebar__title">
+            <h3>{{ $title }}</h3>
+        </div>
+        <button class="layout-sidebar__close close-sidebar"
+                id="close-sidebar"
+                type="button"
+                aria-label="Fechar menu">
+            <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <ul class="sidebar-menu">
-        @foreach ($normalisedItems as $item)
-            @php
-                $url = $item['url'] ?? '#';
-                $isActive = $item['active'] ?? false;
-                if (! $isActive) {
-                    $isActive = $current === $url || url($url) === url()->current();
-                }
-            @endphp
-            <li>
-                <a href="{{ $url }}" @class(['active' => $isActive])>
-                    @if (! empty($item['icon']))
-                        <i class="fa {{ $item['icon'] }}"></i>
-                    @endif
-                    <span>{{ $item['label'] }}</span>
-                </a>
-            </li>
-        @endforeach
-    </ul>
+
+    <nav class="layout-sidebar__nav" aria-label="Menu principal">
+        <ul class="layout-sidebar__list sidebar-menu">
+            @foreach ($normalisedItems as $item)
+                @php
+                    $url = $item['url'] ?? '#';
+                    $isActive = $item['active'] ?? false;
+                    if (! $isActive) {
+                        $isActive = $current === $url || url($url) === url()->current();
+                    }
+                @endphp
+                <li class="layout-sidebar__item">
+                    <a href="{{ $url }}" @class(['layout-sidebar__link', 'is-active' => $isActive])>
+                        @if (! empty($item['icon']))
+                            <i class="fa {{ $item['icon'] }}" aria-hidden="true"></i>
+                        @endif
+                        <span class="layout-sidebar__label">{{ $item['label'] }}</span>
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </nav>
 </aside>

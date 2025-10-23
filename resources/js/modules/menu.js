@@ -1,80 +1,209 @@
-const MOBILE_BREAKPOINT = 768;
+const DEFAULT_BREAKPOINTS = [
+    { name: 'mobile', width: 0, mode: 'overlay' },
+    { name: 'tablet', width: 768, mode: 'overlay' },
+    { name: 'desktop', width: 1024, mode: 'inline' },
+];
 
-function setSidebarMargin({ sidebar, mainContent }) {
-    if (!sidebar || !mainContent) {
+const BREAKPOINT_CLASS_PREFIX = 'is-breakpoint-';
+
+function parseBreakpoints(raw) {
+    if (!raw) {
+        return null;
+    }
+
+    if (Array.isArray(raw)) {
+        return raw;
+    }
+
+    if (typeof raw === 'string') {
+        try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+        } catch (error) {
+            console.warn('[menu] Não foi possível ler os breakpoints fornecidos.', error);
+        }
+    }
+
+    return null;
+}
+
+function normaliseBreakpoints(breakpoints) {
+    const source = parseBreakpoints(breakpoints) ?? DEFAULT_BREAKPOINTS;
+
+    return source
+        .map((bp, index) => {
+            if (typeof bp === 'number') {
+                return {
+                    name: `bp-${index}`,
+                    width: bp,
+                    mode: index === source.length - 1 ? 'inline' : 'overlay',
+                };
+            }
+
+            const width = Number(bp.width ?? bp.breakpoint ?? 0);
+            const name = typeof bp.name === 'string' ? bp.name : `bp-${index}`;
+            const mode = bp.mode === 'inline' ? 'inline' : 'overlay';
+
+            return { name, width, mode };
+        })
+        .sort((a, b) => a.width - b.width);
+}
+
+function resolveContainer(root) {
+    if (!root) {
+        return null;
+    }
+
+    if (root instanceof Document) {
+        return root.querySelector('[data-layout-container]') ?? root.body ?? null;
+    }
+
+    if (root.matches && root.matches('[data-layout-container]')) {
+        return root;
+    }
+
+    return root.querySelector?.('[data-layout-container]') ?? root;
+}
+
+function syncToggleAria(container, toggle) {
+    if (!toggle) {
         return;
     }
 
-    if (window.innerWidth > MOBILE_BREAKPOINT) {
-        sidebar.classList.remove('active');
-        if (!sidebar.classList.contains('collapsed')) {
-            mainContent.style.marginLeft = '250px';
-            sidebar.style.transform = 'translateX(0)';
-        } else {
-            mainContent.style.marginLeft = '70px';
-            sidebar.style.transform = 'translateX(0)';
+    const isOverlay = container.classList.contains('is-sidebar-overlay');
+    let expanded;
+
+    if (isOverlay) {
+        expanded = container.classList.contains('is-sidebar-open');
+    } else {
+        expanded = !container.classList.contains('is-sidebar-collapsed');
+    }
+
+    toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+}
+
+function ensureOverlayState(container, backdrop) {
+    const isOverlay = container.classList.contains('is-sidebar-overlay');
+    const isOpen = container.classList.contains('is-sidebar-open');
+
+    if (!isOverlay) {
+        container.classList.remove('is-sidebar-hidden');
+        if (backdrop) {
+            backdrop.setAttribute('hidden', 'hidden');
+        }
+        return;
+    }
+
+    if (isOpen) {
+        container.classList.remove('is-sidebar-hidden');
+        if (backdrop) {
+            backdrop.removeAttribute('hidden');
         }
     } else {
-        sidebar.classList.remove('collapsed');
-        mainContent.style.marginLeft = '0';
-        if (!sidebar.classList.contains('active')) {
-            sidebar.style.transform = 'translateX(-100%)';
+        container.classList.add('is-sidebar-hidden');
+        if (backdrop) {
+            backdrop.setAttribute('hidden', 'hidden');
         }
     }
 }
 
-export function initResponsiveMenu(root = document) {
-    if (!root) {
+function applyBreakpointState(container, breakpoints, toggle, backdrop) {
+    const active = breakpoints.reduce((current, bp) => {
+        if (window.innerWidth >= bp.width) {
+            return bp;
+        }
+        return current;
+    }, breakpoints[0]);
+
+    breakpoints.forEach((bp) => {
+        container.classList.remove(`${BREAKPOINT_CLASS_PREFIX}${bp.name}`);
+    });
+
+    container.classList.add(`${BREAKPOINT_CLASS_PREFIX}${active.name}`);
+    container.dataset.layoutBreakpoint = active.name;
+
+    if (active.mode === 'overlay') {
+        container.classList.add('is-sidebar-overlay');
+    } else {
+        container.classList.remove('is-sidebar-overlay');
+        container.classList.remove('is-sidebar-open');
+        container.classList.remove('is-sidebar-hidden');
+    }
+
+    ensureOverlayState(container, backdrop);
+    syncToggleAria(container, toggle);
+}
+
+export function initResponsiveMenu(root = document, options = {}) {
+    const container = resolveContainer(root);
+    const sidebar = container?.querySelector?.('#sidebar');
+
+    if (!container || !sidebar || sidebar.dataset.menuInitialised === '1') {
         return;
     }
 
-    const sidebar = root.querySelector('#sidebar');
-    if (!sidebar || sidebar.dataset.menuInitialised === '1') {
-        return;
-    }
+    const menuToggle = container.querySelector('#menu-toggle');
+    const closeSidebar = container.querySelector('#close-sidebar');
+    const backdrop = container.querySelector('[data-sidebar-backdrop]');
 
-    const menuToggle = root.querySelector('#menu-toggle');
-    const mainContent = root.querySelector('#main-content');
-    const closeSidebar = root.querySelector('#close-sidebar');
+    const breakpoints = normaliseBreakpoints(options.breakpoints ?? container.dataset.menuBreakpoints);
 
-    const context = { sidebar, mainContent };
+    const handleResize = () => applyBreakpointState(container, breakpoints, menuToggle, backdrop);
 
-    const resizeHandler = () => setSidebarMargin(context);
+    const openSidebar = () => {
+        container.classList.add('is-sidebar-open');
+        ensureOverlayState(container, backdrop);
+        syncToggleAria(container, menuToggle);
+    };
 
-    if (closeSidebar) {
-        closeSidebar.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            sidebar.style.transform = 'translateX(-100%)';
-        });
-    }
+    const closeOverlaySidebar = () => {
+        container.classList.remove('is-sidebar-open');
+        ensureOverlayState(container, backdrop);
+        syncToggleAria(container, menuToggle);
+    };
 
-    if (menuToggle && sidebar && mainContent) {
-        menuToggle.addEventListener('click', () => {
-            if (window.innerWidth <= MOBILE_BREAKPOINT) {
-                sidebar.classList.toggle('active');
-                sidebar.style.transform = sidebar.classList.contains('active')
-                    ? 'translateX(0)'
-                    : 'translateX(-100%)';
+    const toggleSidebar = () => {
+        if (container.classList.contains('is-sidebar-overlay')) {
+            if (container.classList.contains('is-sidebar-open')) {
+                closeOverlaySidebar();
             } else {
-                sidebar.classList.toggle('collapsed');
-                setSidebarMargin(context);
+                openSidebar();
             }
-        });
-        window.addEventListener('resize', resizeHandler);
-        setSidebarMargin(context);
-    }
+            return;
+        }
+
+        container.classList.toggle('is-sidebar-collapsed');
+        syncToggleAria(container, menuToggle);
+    };
+
+    menuToggle?.addEventListener('click', toggleSidebar);
+    closeSidebar?.addEventListener('click', closeOverlaySidebar);
+    backdrop?.addEventListener('click', closeOverlaySidebar);
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
 
     sidebar.dataset.menuInitialised = '1';
+    container.dataset.menuInitialised = '1';
 }
 
 export function toggleUserMenu() {
     const menu = document.getElementById('user-menu');
+    const toggle = document.querySelector('.user-dropdown-toggle');
     if (!menu) {
         return;
     }
 
-    const isVisible = menu.style.display === 'block';
-    menu.style.display = isVisible ? 'none' : 'block';
+    const isHidden = menu.hasAttribute('hidden');
+    if (isHidden) {
+        menu.removeAttribute('hidden');
+        toggle?.setAttribute('aria-expanded', 'true');
+    } else {
+        menu.setAttribute('hidden', 'hidden');
+        toggle?.setAttribute('aria-expanded', 'false');
+    }
 }
 
 export function bindUserMenuDismiss() {
@@ -89,8 +218,9 @@ export function bindUserMenuDismiss() {
             return;
         }
 
-        if (menu.style.display === 'block' && !menu.contains(event.target) && !toggle.contains(event.target)) {
-            menu.style.display = 'none';
+        if (!menu.hasAttribute('hidden') && !menu.contains(event.target) && !toggle.contains(event.target)) {
+            menu.setAttribute('hidden', 'hidden');
+            toggle.setAttribute('aria-expanded', 'false');
         }
     });
 
@@ -103,8 +233,9 @@ export function mostrarAlerta(mensagem, tipo = 'success') {
         return;
     }
 
+    const safeTipo = typeof tipo === 'string' && tipo.trim() !== '' ? tipo.trim() : 'success';
     area.innerHTML = `
-        <div class="alert alert-${tipo}" style="margin-bottom:10px;">
+        <div class="alert alert-${safeTipo}">
             ${mensagem}
         </div>
     `;

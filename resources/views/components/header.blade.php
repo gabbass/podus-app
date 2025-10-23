@@ -4,6 +4,9 @@
     'name' => '',
     'profile' => null,
     'userMenu' => null,
+    'isSidebarCollapsed' => false,
+    'isSidebarOverlay' => false,
+    'isSidebarOpen' => false,
 ])
 
 @php
@@ -71,12 +74,23 @@
     $dropdownItems = array_merge($defaultUserMenu, $userMenu);
 @endphp
 
-<header class="top-nav" data-header-component>
-    <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Alternar menu">
-        <i class="fa fa-bars"></i>
-    </button>
+@php
+    $menuAriaExpanded = $isSidebarOverlay ? ($isSidebarOpen ? 'true' : 'false') : ($isSidebarCollapsed ? 'false' : 'true');
+@endphp
 
-    <div id="alertas-area" @class(['oculto' => empty($preparedAlerts)])>
+<header class="layout-header top-nav" data-header-component>
+    <div class="layout-header__menu">
+        <button class="menu-toggle"
+                id="menu-toggle"
+                type="button"
+                aria-label="Alternar menu lateral"
+                aria-expanded="{{ $menuAriaExpanded }}"
+                data-menu-toggle>
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div id="alertas-area" class="layout-header__alerts" @class(['oculto' => empty($preparedAlerts)])>
         @foreach ($preparedAlerts as $alert)
             <div class="alert alert-{{ $alert['type'] }}">
                 {!! $alert['message'] !!}
@@ -84,19 +98,23 @@
         @endforeach
     </div>
 
-    <div class="user-area">
+    <div class="layout-header__user user-area">
         @if ($avatar)
             <div class="user-img">
-                <img src="{{ $avatar }}" alt="Avatar" width="40" height="40" style="border-radius:50%;" />
+                <img src="{{ $avatar }}" alt="Avatar" />
             </div>
         @endif
         @if ($name)
             <span class="user-name">{{ $name }}</span>
         @endif
-        <button class="user-dropdown-toggle" type="button" onclick="window.toggleUserMenu?.()" aria-label="Abrir menu do usuário">
-            <i class="fa fa-chevron-down"></i>
+        <button class="user-dropdown-toggle"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                onclick="window.toggleUserMenu?.()">
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
         </button>
-        <div id="user-menu" class="user-menu">
+        <div id="user-menu" class="user-menu" hidden>
             @foreach ($dropdownItems as $link)
                 @php
                     $attrs = $link['attributes'] ?? [];
@@ -109,7 +127,7 @@
                 @endphp
                 <a href="{{ $link['url'] ?? '#' }}"{!! $attrString !!}>
                     @if (! empty($link['icon']))
-                        <i class="fa {{ $link['icon'] }}"></i>
+                        <i class="fa {{ $link['icon'] }}" aria-hidden="true"></i>
                     @endif
                     {{ $link['label'] ?? '' }}
                 </a>
