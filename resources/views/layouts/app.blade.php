@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? config('app.name', 'Portal Universo do Saber') }}</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/pustyle.css') }}">
-    <script type="module" src="{{ asset('assets/js/app.js') }}" defer></script>
+    @vite(['resources/js/app.js', 'resources/css/pustyle.css'])
     @stack('head')
 </head>
 @php
