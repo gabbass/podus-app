@@ -1,12 +1,9 @@
 # API de agendamentos de salas
 
 ## Visão geral
-O fluxo de reservas de salas está dividido em dois pontos de integração:
+O fluxo de reservas de salas é atendido exclusivamente pelo controlador moderno (`App\Http\Controllers\Api\PlanningApiController`), acessado via chamadas JSON para `/api/planning` com o parâmetro `acao`. As rotas expõem as operações do planejador e respeitam a política de permissões centralizada em `PermissionMatrix`. O endpoint PHP legado (`legacy/includes/action-planejamento-mensal.php`) foi desativado e agora responde `410 Gone` orientando clientes a migrarem para a API atual.【F:app/Http/Controllers/Api/PlanningApiController.php†L1-L327】【F:legacy/includes/action-planejamento-mensal.php†L1-L8】
 
-- **Interface legada do planejador** (`legacy/includes/action-planejamento-mensal.php`), utilizada pelo frontend atual para listar salas, consultar reservas, criar solicitações e acionar aprovações/cancelamentos via parâmetro `acao` em requisições GET/POST.【F:legacy/includes/action-planejamento-mensal.php†L1-L247】
-- **Controlador moderno** (`App\Http\Controllers\Api\PlanningApiController`) acessado por integrações externas mediante chamadas JSON para `/api/planning` com o mesmo parâmetro `acao`. As rotas expõem exatamente as mesmas operações e respeitam a política de permissões centralizada em `PermissionMatrix`.【F:app/Http/Controllers/Api/PlanningApiController.php†L1-L231】【F:app/Auth/Policies/PermissionMatrix.php†L8-L41】
-
-Ambas as superfícies usam `RoomReservationService`, que garante conflitos de agenda, vinculação ao planejamento, regras de aprovação e associação com escolas/professores.【F:app/Services/RoomReservationService.php†L1-L307】 As tabelas `rooms` e `room_reservations` são criadas via migrations dedicadas e relacionam reservas com escolas, usuários e planejamentos legados.【F:database/migrations/2024_07_18_000004_create_rooms_table.php†L1-L35】【F:database/migrations/2024_07_18_000005_create_room_reservations_table.php†L1-L78】
+O controlador usa `RoomReservationService`, que garante conflitos de agenda, vinculação ao planejamento, regras de aprovação e associação com escolas/professores.【F:app/Services/RoomReservationService.php†L1-L307】 As tabelas `rooms` e `room_reservations` são criadas via migrations dedicadas e relacionam reservas com escolas, usuários e planejamentos legados.【F:database/migrations/2024_07_18_000004_create_rooms_table.php†L1-L35】【F:database/migrations/2024_07_18_000005_create_room_reservations_table.php†L1-L78】
 
 ## Ações disponíveis
 As ações abaixo aceitam e retornam JSON (`sucesso`, `mensagem`, `dados`). Quando necessário, envie os parâmetros no corpo (`POST`) ou na query string (`GET`).
@@ -85,8 +82,8 @@ Content-Type: application/json
 ```
 Resposta (200): reserva atualizada com `status` `approved` e carimbo `aprovado_em`.
 
-## Interface legada (frontend)
-O frontend legado consome as mesmas ações por AJAX e renderiza a tabela de reservas no formulário do planejador. Os botões de aprovação/cancelamento são habilitados conforme os flags retornados e o perfil armazenado em `window.usuarioPerfil`.【F:legacy/public/js/planejamento-mensal.js†L1-L374】【F:legacy/includes/crud-planejamento-mensal.php†L1-L118】
+## Frontend moderno
+O frontend Laravel consome a API via módulo ESM (`public/assets/js/modules/planning.js`) carregado pela view Blade `resources/views/planning/index.blade.php`. A página injeta permissões e identificadores do usuário via atributos `data-*`, popula o formulário de planejamento, agenda salas e coordena aprovações/cancelamentos conforme os flags retornados pela API.【F:public/assets/js/modules/planning.js†L1-L654】【F:resources/views/planning/index.blade.php†L1-L259】
 
 ## Observações adicionais
 - Conflitos de horário consideram reservas `pending` e `approved` para a mesma sala; uma exceção `Já existe uma reserva para este período` é devolvida ao cliente.【F:app/Services/RoomReservationService.php†L244-L272】

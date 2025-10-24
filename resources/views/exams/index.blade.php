@@ -171,8 +171,7 @@
     @endpush
 
     @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-        <script src="{{ asset('legacy/js/provas.js') }}"></script>
+        <script type="module" src="{{ asset('assets/js/modules/exams.js') }}" defer></script>
     @endpush
 </x-layouts.app>
