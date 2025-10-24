@@ -224,21 +224,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalGeral" tabindex="-1" aria-labelledby="modalGeralLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalGeralLabel">Confirmação</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body" id="modalGeralBody">Deseja confirmar esta ação?</div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="modalGeralConfirmar">Confirmar</button>
-                    <button type="button" class="btn btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <x-modal />
 
     <template id="planning-line-template">
         <div class="bloco-linha content-container sub-container" data-grupo="__GID__">
