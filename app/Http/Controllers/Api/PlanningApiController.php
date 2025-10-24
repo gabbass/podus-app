@@ -60,17 +60,23 @@ class PlanningApiController extends Controller
     protected function listarCiclos()
     {
         return response()->json([
-            ['id' => 'mensal', 'nome' => 'Mensal'],
-            ['id' => 'bimestral', 'nome' => 'Bimestral'],
-            ['id' => 'trimestral', 'nome' => 'Trimestral'],
-            ['id' => 'semestral', 'nome' => 'Semestral'],
-            ['id' => 'anual', 'nome' => 'Anual'],
+            'sucesso' => true,
+            'ciclos' => [
+                ['id' => 'mensal', 'nome' => 'Mensal'],
+                ['id' => 'bimestral', 'nome' => 'Bimestral'],
+                ['id' => 'trimestral', 'nome' => 'Trimestral'],
+                ['id' => 'semestral', 'nome' => 'Semestral'],
+                ['id' => 'anual', 'nome' => 'Anual'],
+            ],
         ]);
     }
 
     protected function listarMaterias()
     {
-        return response()->json(Materia::listAll());
+        return response()->json([
+            'sucesso' => true,
+            'materias' => Materia::listAll(),
+        ]);
     }
 
     protected function listPlanning(Request $request, string $perfil, ?int $userId)
