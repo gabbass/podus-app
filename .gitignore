@@ -4,3 +4,7 @@
 *.env
 **/.env
 ai/.env
+
+# Node/Vite build artifacts
+node_modules/
+public/build/

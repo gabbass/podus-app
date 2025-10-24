@@ -1,2 +1,2 @@
-@import url('css/legacy-tokens.css');
-@import url('css/pustyle.css');
+/* @deprecated: manter apenas como alias temporário durante migração para Vite. */
+@import url('/build/assets/pustyle.css');
