@@ -5,7 +5,7 @@ import {
     mostrarAlerta,
     destacarPrimeiroElemento,
     iniciarDestaques,
-} from './modules/menu';
+} from './modules/menu.js';
 
 if (typeof window !== 'undefined') {
     window.initResponsiveMenu = initResponsiveMenu;
