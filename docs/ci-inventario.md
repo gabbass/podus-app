@@ -12,3 +12,6 @@ Não foi possível verificar se existem workflows ocultos ou desabilitados porqu
 
 ## Checks de branch protection
 Não foi possível confirmar quais branches ou pull requests exigem o check "CI / build" nas regras de branch protection, pois a interface de configurações do repositório não está acessível neste ambiente.
+
+## Desativação temporária do CI
+O workflow `CI` foi configurado para executar apenas sob demanda via `workflow_dispatch`. Essa alteração substitui os gatilhos automáticos de `push` e `pull_request` e efetivamente mantém o pipeline desativado até que seja manualmente acionado. O workflow poderá ser reabilitado revertendo essa alteração para restaurar os gatilhos automáticos quando o estado atual da base de código estiver estável ou quando os custos de manutenção permitirem retomar a execução contínua.
