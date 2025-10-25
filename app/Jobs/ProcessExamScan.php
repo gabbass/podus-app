@@ -203,17 +203,13 @@ class ProcessExamScan
         $gradeColumn = 'nota_tenta' . $attempt;
         $gradeValue = (float) $summary['grade'];
 
-        $updateSql = sprintf(
-            'UPDATE provas SET tentativa_feita = CASE WHEN tentativa_feita < :attempt THEN :attempt ELSE tentativa_feita END, %s = :nota WHERE id = :id',
-            $gradeColumn
-        );
+        $updateSql = sprintf('UPDATE provas SET %s = :nota WHERE id = :id', $gradeColumn);
         $update = $this->pdo->prepare($updateSql);
         if ($update === false) {
             throw new RuntimeException('Não foi possível atualizar a nota da prova.');
         }
 
         $update->execute([
-            ':attempt' => $attempt,
             ':nota' => $gradeValue,
             ':id' => $provaId,
         ]);
