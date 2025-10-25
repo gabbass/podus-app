@@ -69,7 +69,7 @@ class ExamCorrectionController extends Controller
         }
 
         try {
-            $prova = $this->resolveProvaAluno($pdo, $provaOnline, $matricula);
+            $prova = $this->resolveProvaAluno($pdo, $provaOnline, $matricula, true, true);
         } catch (RuntimeException $exception) {
             return $this->json([
                 'sucesso' => false,
@@ -77,13 +77,15 @@ class ExamCorrectionController extends Controller
             ], 422);
         }
 
-        $attempt = $prova['next_attempt'];
+        $attempt = $prova['reserved_attempt'];
         if ($attempt === null) {
             return $this->json([
                 'sucesso' => false,
                 'mensagem' => 'Limite de tentativas atingido para este aluno.',
             ], 409);
         }
+
+        $attempt = (int) $attempt;
 
         $storagePath = $this->storeUploadedFile($file, $examId, $matricula, $attempt);
         if ($storagePath === null) {
@@ -128,6 +130,7 @@ class ExamCorrectionController extends Controller
             'scan_id' => (int) $scan['id'],
             'status' => $scan['status'],
             'attempt' => $attempt,
+            'tentativas_feitas' => (int) $prova['tentativa_feita'],
             'tentativas_restantes' => max(0, ExamOmrConfig::maxAttempts() - $attempt),
             'provas_id' => $prova['provas_id'],
         ]);
@@ -267,56 +270,114 @@ class ExamCorrectionController extends Controller
 
     /**
      * @param array<string,mixed> $provaOnline
-     * @return array{provas_id:int,tentativa_feita:int,next_attempt:?int}
+     * @return array{provas_id:int,tentativa_feita:int,next_attempt:?int,reserved_attempt:?int}
      */
-    private function resolveProvaAluno(PDO $pdo, array $provaOnline, string $matricula, bool $create = true): array
+    private function resolveProvaAluno(
+        PDO $pdo,
+        array $provaOnline,
+        string $matricula,
+        bool $create = true,
+        bool $reserveAttempt = false
+    ): array
     {
-        $stmt = $pdo->prepare('SELECT * FROM provas WHERE matricula = :matricula AND turma = :turma AND materia = :materia LIMIT 1');
+        $driver = (string) $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $selectSql = 'SELECT * FROM provas WHERE matricula = :matricula AND turma = :turma AND materia = :materia LIMIT 1';
+        if ($reserveAttempt && $driver !== 'sqlite') {
+            $selectSql .= ' FOR UPDATE';
+        }
+
+        $stmt = $pdo->prepare($selectSql);
         if ($stmt === false) {
             throw new RuntimeException('Não foi possível preparar consulta da prova do aluno.');
         }
 
-        $stmt->execute([
-            ':matricula' => $matricula,
-            ':turma' => $provaOnline['turma'] ?? '',
-            ':materia' => $provaOnline['materia'] ?? '',
-        ]);
+        $transactionStarted = false;
+        if ($reserveAttempt && !$pdo->inTransaction()) {
+            $pdo->beginTransaction();
+            $transactionStarted = true;
+        }
 
-        $provaAluno = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        try {
+            $criteria = [
+                ':matricula' => $matricula,
+                ':turma' => $provaOnline['turma'] ?? '',
+                ':materia' => $provaOnline['materia'] ?? '',
+            ];
 
-        if (!is_array($provaAluno) && $create) {
-            $insert = $pdo->prepare('INSERT INTO provas (matricula, turma, materia, tentativa_feita, data) VALUES (:matricula, :turma, :materia, 0, CURRENT_TIMESTAMP)');
-            if ($insert === false) {
-                throw new RuntimeException('Não foi possível cadastrar a prova do aluno.');
+            $stmt->execute($criteria);
+            $provaAluno = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+
+            if (!is_array($provaAluno) && $create) {
+                $insert = $pdo->prepare('INSERT INTO provas (matricula, turma, materia, tentativa_feita, data) VALUES (:matricula, :turma, :materia, 0, CURRENT_TIMESTAMP)');
+                if ($insert === false) {
+                    throw new RuntimeException('Não foi possível cadastrar a prova do aluno.');
+                }
+
+                $insert->execute($criteria);
+
+                $stmt->closeCursor();
+                $stmt->execute($criteria);
+                $provaAluno = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
             }
 
-            $insert->execute([
-                ':matricula' => $matricula,
-                ':turma' => $provaOnline['turma'] ?? '',
-                ':materia' => $provaOnline['materia'] ?? '',
-            ]);
+            if (!is_array($provaAluno)) {
+                throw new RuntimeException('Não foi possível identificar a prova do aluno.');
+            }
 
-            $stmt->execute([
-                ':matricula' => $matricula,
-                ':turma' => $provaOnline['turma'] ?? '',
-                ':materia' => $provaOnline['materia'] ?? '',
-            ]);
-            $provaAluno = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+            $tentativasFeitas = (int) ($provaAluno['tentativa_feita'] ?? 0);
+            $max = ExamOmrConfig::maxAttempts();
+            $reservedAttempt = null;
+
+            if ($reserveAttempt) {
+                $originalAttempts = $tentativasFeitas;
+                $affected = 0;
+
+                if ($tentativasFeitas < $max) {
+                    $update = $pdo->prepare('UPDATE provas SET tentativa_feita = tentativa_feita + 1 WHERE id = :id AND tentativa_feita < :max');
+                    if ($update === false) {
+                        throw new RuntimeException('Não foi possível reservar tentativa da prova.');
+                    }
+
+                    $update->execute([
+                        ':id' => (int) $provaAluno['id'],
+                        ':max' => $max,
+                    ]);
+
+                    $affected = $update->rowCount();
+                }
+
+                $stmt->closeCursor();
+                $stmt->execute($criteria);
+                $updated = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (is_array($updated)) {
+                    $provaAluno = $updated;
+                }
+
+                $tentativasFeitas = (int) ($provaAluno['tentativa_feita'] ?? $tentativasFeitas);
+                if ($affected > 0 && $tentativasFeitas > $originalAttempts) {
+                    $reservedAttempt = $tentativasFeitas;
+                }
+            }
+
+            $nextAttempt = $tentativasFeitas >= $max ? null : min($max, $tentativasFeitas + 1);
+
+            if ($transactionStarted) {
+                $pdo->commit();
+            }
+
+            return [
+                'provas_id' => (int) $provaAluno['id'],
+                'tentativa_feita' => $tentativasFeitas,
+                'next_attempt' => $nextAttempt,
+                'reserved_attempt' => $reserveAttempt ? $reservedAttempt : null,
+            ];
+        } catch (Throwable $exception) {
+            if ($transactionStarted && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+
+            throw $exception;
         }
-
-        if (!is_array($provaAluno)) {
-            throw new RuntimeException('Não foi possível identificar a prova do aluno.');
-        }
-
-        $tentativasFeitas = (int) ($provaAluno['tentativa_feita'] ?? 0);
-        $max = ExamOmrConfig::maxAttempts();
-        $nextAttempt = $tentativasFeitas >= $max ? null : min($max, $tentativasFeitas + 1);
-
-        return [
-            'provas_id' => (int) $provaAluno['id'],
-            'tentativa_feita' => $tentativasFeitas,
-            'next_attempt' => $nextAttempt,
-        ];
     }
 
     /**

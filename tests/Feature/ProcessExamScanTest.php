@@ -114,7 +114,7 @@ class ProcessExamScanTest extends TestCase
         $insertQuestion->execute([202, 'C', 'op1', 'op2', 'op3', 'op4', 'op5']);
 
         $pdo->prepare('INSERT INTO provas (matricula, turma, materia, tentativa_feita, nota_tenta1) VALUES (?, ?, ?, ?, ?)')
-            ->execute(['STU1', '6B', 'Ciências', 0, null]);
+            ->execute(['STU1', '6B', 'Ciências', 1, null]);
 
         $pdo->prepare('INSERT INTO login (matricula, moodle_user_id) VALUES (?, ?)')
             ->execute(['STU1', null]);
