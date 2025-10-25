@@ -248,6 +248,12 @@ Os estilos e scripts utilizados pela interface legada são servidos diretamente 
 - **Problemas com OCR**: confira configurações em `config/services.php` e credenciais no `.env`.
 - **Assets ausentes**: execute as etapas da [Build dos assets](#build-dos-assets) e limpe caches do navegador.
 
+## Documentação complementar
+
+- [Mapa do código](docs/mapa-codigo.md): visão das camadas, fluxos críticos e pontos de extensão.
+- [Padrões de desenvolvimento](docs/padroes-desenvolvimento.md): convenções para backend, legado e frontend.
+- Consulte também `docs/` para guias específicos de integrações, infraestrutura e processos legados.
+
 ## Contribuindo
 
 1. Crie uma branch a partir de `main`.
