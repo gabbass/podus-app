@@ -396,21 +396,27 @@ class ExamCorrectionController extends Controller
         }
 
         $safeMatricula = preg_replace('/[^A-Za-z0-9]/', '_', $matricula) ?? 'aluno';
-        $filename = sprintf(
-            '%s_exam%d_%s_attempt%d.%s',
-            (new DateTimeImmutable())->format('YmdHis'),
-            $examId,
-            $safeMatricula,
-            $attempt,
-            strtolower($extension)
-        );
 
         $directory = $this->storagePath('exams');
         if (!is_dir($directory)) {
             mkdir($directory, 0775, true);
         }
 
-        $destination = $directory . DIRECTORY_SEPARATOR . $filename;
+        $destination = null;
+
+        do {
+            $filename = sprintf(
+                '%s_%s_exam%d_%s_attempt%d.%s',
+                (new DateTimeImmutable())->format('YmdHis'),
+                bin2hex(random_bytes(6)),
+                $examId,
+                $safeMatricula,
+                $attempt,
+                strtolower($extension)
+            );
+
+            $destination = $directory . DIRECTORY_SEPARATOR . $filename;
+        } while (file_exists($destination));
         $moved = false;
         if (is_uploaded_file($tmp)) {
             $moved = move_uploaded_file($tmp, $destination);
